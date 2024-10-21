@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">KINOTEKA</string>
+    <string name="welcome_text">Добро пожаловать в MovieCatalog</string>
+    <string name="enter_in_account_button">Войти в аккаунт</string>
+    <string name="sing_up_button">Зарегистрироваться</string>
+    <string name="enter_in_account">Вход в аккаунт</string>
+    <string name="sign_in">Войти</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+    <string name="email">Электронная почта</string>
+    <string name="name">Имя</string>
+    <string name="password_confirm">Подтвердите пароль</string>
+    <string name="birthday">Дата рождения</string>
+    <string name="to_sign_up">Зарегистрироваться</string>
+    <string name="man">Мужчина</string>
+    <string name="woman">Женщина</string>
+    <string name="empty_field_error">Поле не должно быть пустым.</string>
+    <string name="invalid_login_length">Логин должен содержать не менее 4 символов.</string>
+    <string name="mismatch_error">Пароли не совпадают</string>
+    <string name="invalid_email_error">Введите корректный адрес электронной почты</string>
+    <string name="invalid_name_length">Имя должно содержать не менее 3 символов</string>
+    <string name="invalid_password_length">Пароль должен содержать не менее 8 символов</string>
+    <string name="invalid_birthday">Введите корректную дату рождения</string>
+</resources>
