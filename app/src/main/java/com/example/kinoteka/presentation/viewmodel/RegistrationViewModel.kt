@@ -5,9 +5,11 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.kinoteka.domain.usecase.ValidateEmailUseCase
 import com.example.kinoteka.domain.model.ValidationErrorType
+import com.example.kinoteka.domain.usecase.RegisterUserUseCase
 import com.example.kinoteka.domain.usecase.ValidateLoginUseCase
 import com.example.kinoteka.domain.usecase.ValidatePasswordUseCase
 import com.example.kinoteka.domain.usecase.ValidateConfirmPasswordUseCase
+import com.example.kinoteka.domain.usecase.ValidateNameUseCase
 import com.example.kinoteka.presentation.mapper.ErrorTypeToStringResource
 import com.example.kinoteka.presentation.model.RegistrationContent
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,18 +23,35 @@ class RegistrationViewModel(
     private val validateLoginUseCase: ValidateLoginUseCase,
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val validateRepeatedPasswordUseCase: ValidateConfirmPasswordUseCase
-//    private val registerUserUseCase: RegisterUserUseCase
+    private val validateNameUseCase: ValidateNameUseCase,
+    private val validateRepeatedPasswordUseCase: ValidateConfirmPasswordUseCase,
+    private val registerUserUseCase: RegisterUserUseCase
 ) : ViewModel(){
     private val _registrationContent = MutableStateFlow(RegistrationContent())
     val registrationContent: StateFlow<RegistrationContent> = _registrationContent
 
     private val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
+    private val _isFormValid = MutableStateFlow(false)
+    val isFormValid: StateFlow<Boolean> = _isFormValid
+
+    private fun validateForm(context: Context ?= null) {
+        _isFormValid.value = _registrationContent.value.name.isNotEmpty() &&
+                _registrationContent.value.login.isNotEmpty() &&
+                _registrationContent.value.email.isNotEmpty() &&
+                _registrationContent.value.password.isNotEmpty() &&
+                _registrationContent.value.confirmPassword.isNotEmpty() &&
+                _registrationContent.value.nameErrorType == null &&
+                _registrationContent.value.loginError == null &&
+                _registrationContent.value.emailError == null &&
+                _registrationContent.value.passwordError == null &&
+                _registrationContent.value.confirmPasswordError == null &&
+                _registrationContent.value.birthday.isNotEmpty()
+    }
+
     fun onLoginChanged(newLogin: String, context: Context) {
         val validationResult = validateLoginUseCase(newLogin)
         val errorDescription = getErrorDescription(validationResult)
-        // Проверка на наличие ошибки и показ Toast
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
         } else {
@@ -44,6 +63,7 @@ class RegistrationViewModel(
                 loginError = errorDescription
             )
         }
+        validateForm(context)
     }
 
     fun onEmailChanged(email: String, context: Context) {
@@ -56,8 +76,24 @@ class RegistrationViewModel(
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "email валиден", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "email валиден ${email}", Toast.LENGTH_SHORT).show()
         }
+        validateForm(context)
+    }
+
+    fun onNameChanged(name: String, context: Context) {
+        val validationResult = validateNameUseCase(name)
+        val errorDescription = getErrorDescription(validationResult)
+        _registrationContent.value = _registrationContent.value.copy(
+            name = name,
+            nameErrorType = errorDescription
+        )
+        if (validationResult != null) {
+            Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "name валиден ${name}", Toast.LENGTH_SHORT).show()
+        }
+        validateForm(context)
     }
 
     fun onPasswordChanged(password: String, context: Context){
@@ -65,13 +101,14 @@ class RegistrationViewModel(
         val errorDescription = getErrorDescription(validationResult)
         _registrationContent.value = _registrationContent.value.copy(
             password = password,
-            emailError = errorDescription
+            passwordError = errorDescription
         )
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "пароль валиден", Toast.LENGTH_SHORT).show()
         }
+        validateForm(context)
     }
 
     fun onRepeatPasswordChanged(confirmPassword: String, context: Context){
@@ -80,13 +117,14 @@ class RegistrationViewModel(
         val errorDescription = getErrorDescription(validationResult)
         _registrationContent.value = _registrationContent.value.copy(
             confirmPassword = confirmPassword,
-            emailError = errorDescription
+            confirmPasswordError = errorDescription
         )
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "пароли совпадают", Toast.LENGTH_SHORT).show()
         }
+        validateForm(context)
     }
 
     fun onDateChange(year: Int, month: Int, day: Int) {
@@ -97,6 +135,7 @@ class RegistrationViewModel(
         _registrationContent.update { currentState ->
             currentState.copy(birthday = formattedDate)
         }
+        validateForm()
     }
 
     private fun getErrorDescription(validationErrorType: ValidationErrorType?): Int? {

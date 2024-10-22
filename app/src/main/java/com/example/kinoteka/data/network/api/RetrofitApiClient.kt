@@ -1,19 +1,18 @@
 package com.example.kinoteka.data.network.api
 
+import com.example.kinoteka.constants.Constants.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-object RetrofitInstance {
-    private const val BASE_URL = "https://yourapi.com/"
+object RetrofitApiClient {
 
-    private val retrofit by lazy {
-        Retrofit.Builder()
+    val apiClient: ApiServiceInterface by lazy {
+        val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
+        return@lazy retrofit.create(ApiServiceInterface::class.java)
     }
 
-    val api: ApiService by lazy {
-        retrofit.create(ApiService::class.java)
-    }
 }

@@ -11,9 +11,9 @@ data class RegistrationContent(
     val confirmPassword: String = "",
     val birthday: String = "",
     val loginError: Int? = null,
-    val passwordError: ValidationErrorType? = null,
-    val confirmPasswordError: ValidationErrorType? = null,
+    val passwordError:  Int? = null,
+    val confirmPasswordError:  Int? = null,
     val emailError: Int? = null,
-    val nameErrorType: ValidationErrorType? = null,
-    val birthdayErrorType: ValidationErrorType? = null
+    val nameErrorType:  Int? = null,
+    val birthdayErrorType:  Int? = null
 )

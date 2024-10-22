@@ -6,5 +6,5 @@ data class UserRegisterModel(
     val name: String,
     val password: String,
     val birthDate: String,
-    val gender: Int
+    val gender: Int = 0
 )
