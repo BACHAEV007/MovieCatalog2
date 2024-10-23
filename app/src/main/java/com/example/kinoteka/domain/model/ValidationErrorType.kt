@@ -7,6 +7,7 @@ enum class ValidationErrorType {
     PASSWORDS_MISMATCH,
     INVALID_NAME_LENGTH,
     INVALID_BIRTHDAY,
-
+    UNIQUE_LOGIN,
+    UNEXPECTED_ERROR,
     EMPTY_FIELD
 }

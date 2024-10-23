@@ -21,4 +21,6 @@
     <string name="invalid_name_length">Имя должно содержать не менее 3 символов</string>
     <string name="invalid_password_length">Пароль должен содержать не менее 8 символов</string>
     <string name="invalid_birthday">Введите корректную дату рождения</string>
+    <string name="unique_login_error">Такой логин уже существует</string>
+    <string name="unexpected_error">Неизвестная ошибка</string>
 </resources>

@@ -11,6 +11,8 @@ object ErrorTypeToStringResource {
         ValidationErrorType.INVALID_NAME_LENGTH to R.string.invalid_name_length,
         ValidationErrorType.PASSWORDS_MISMATCH to R.string.mismatch_error,
         ValidationErrorType.INVALID_EMAIL to R.string.invalid_email_error,
-        ValidationErrorType.INVALID_BIRTHDAY to R.string.invalid_birthday
+        ValidationErrorType.INVALID_BIRTHDAY to R.string.invalid_birthday,
+        ValidationErrorType.UNIQUE_LOGIN to R.string.unique_login_error,
+        ValidationErrorType.UNEXPECTED_ERROR to R.string.unexpected_error
     )
 }

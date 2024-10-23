@@ -1,7 +1,9 @@
 package com.example.kinoteka.domain.model
 
+import java.time.LocalDateTime
+
 data class UserRegisterModel(
-    val login: String,
+    val userName: String,
     val email: String,
     val name: String,
     val password: String,

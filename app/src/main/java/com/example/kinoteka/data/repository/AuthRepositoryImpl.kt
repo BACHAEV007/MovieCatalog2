@@ -18,7 +18,10 @@ class AuthRepositoryImpl(
             apiService.register(userRegisterDTO).token
         )
     }
-    override suspend fun login(loginBody: LoginCredentials){
-        //loginBody.toDomain()
+    override suspend fun login(loginCredentials: LoginCredentials){
+        val LoginCredentialsDTODTO = networkMapper.run { loginCredentials.toDTO() }
+        tokenDataSource.saveToken(
+            apiService.login(LoginCredentialsDTODTO).token
+        )
     }
 }

@@ -5,42 +5,32 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.kinoteka.data.datasource.TokenDataSource
 import com.example.kinoteka.data.mapper.NetworkMapper
-import com.example.kinoteka.data.network.api.ApiServiceInterface
 import com.example.kinoteka.data.network.api.RetrofitApiClient
 import com.example.kinoteka.data.repository.AuthRepositoryImpl
-import com.example.kinoteka.domain.usecase.RegisterUserUseCase
-import com.example.kinoteka.domain.usecase.ValidateConfirmPasswordUseCase
-import com.example.kinoteka.domain.usecase.ValidateEmailUseCase
+import com.example.kinoteka.domain.usecase.LoginUserUseCase
 import com.example.kinoteka.domain.usecase.ValidateLoginUseCase
-import com.example.kinoteka.domain.usecase.ValidateNameUseCase
 import com.example.kinoteka.domain.usecase.ValidatePasswordUseCase
+import com.example.kinoteka.presentation.viewmodel.LoginViewModel
 import com.example.kinoteka.presentation.viewmodel.RegistrationViewModel
 
-class RegistrationViewModelFactory(
+class LoginViewModelFactory(
     private val context: Context
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(RegistrationViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             val validateLoginUseCase = ValidateLoginUseCase()
-            val validateEmailUseCase = ValidateEmailUseCase()
-            val validateNameUseCase = ValidateNameUseCase()
             val validatePasswordUseCase = ValidatePasswordUseCase()
-            val validateConfirmPasswordUseCase = ValidateConfirmPasswordUseCase()
 
             val tokenDataSource = TokenDataSource(context)
             val networkMapper = NetworkMapper()
             val apiService = RetrofitApiClient.apiClient
             val authRepository = AuthRepositoryImpl(apiService, tokenDataSource, networkMapper)
-            val registerUserUseCase = RegisterUserUseCase(authRepository)
+            val loginUserUseCase = LoginUserUseCase(authRepository)
 
-            return RegistrationViewModel(
+            return LoginViewModel(
                 validateLoginUseCase,
-                validateEmailUseCase,
                 validatePasswordUseCase,
-                validateNameUseCase,
-                validateConfirmPasswordUseCase,
-                registerUserUseCase,
-                context
+                loginUserUseCase
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="app_background">#1E1E1E</color>
     <color name="gray_faded">#999999</color>
+    <color name="not_selected_button">#333333</color>
+    <color name="selected_button_end_gradient">#FFFF6633</color>
+    <color name="selected_button_start_gradient">#FFDF2800</color>
+
 </resources>

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.kinoteka.R
 import com.example.kinoteka.databinding.SignUpScreenBinding
+import com.example.kinoteka.domain.model.Gender
 import com.example.kinoteka.presentation.factory.RegistrationViewModelFactory
 import com.example.kinoteka.presentation.viewmodel.RegistrationViewModel
 import kotlinx.coroutines.launch
@@ -21,6 +22,7 @@ class SignUpScreen() : Fragment(R.layout.sign_up_screen) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = SignUpScreenBinding.bind(view)
+        binding?.maleButton?.isSelected = true
         val inputFields = listOf(
             binding!!.loginEditText,
             binding!!.passwordEditText,
@@ -66,6 +68,21 @@ class SignUpScreen() : Fragment(R.layout.sign_up_screen) {
         binding?.birthdayCalendar?.setOnClickListener {
             showDatePicker()
         }
+        binding?.maleButton?.setOnClickListener {
+            binding?.maleButton?.isSelected = true
+            binding?.femaleButton?.isSelected = false
+            viewModel.onGenderChange(Gender.MALE.ordinal)
+        }
+
+        binding?.signUpButton?.setOnClickListener{
+            viewModel.onRegister()
+        }
+
+        binding?.femaleButton?.setOnClickListener {
+            binding?.maleButton?.isSelected = false
+            binding?.femaleButton?.isSelected = true
+            viewModel.onGenderChange(Gender.FEMALE.ordinal)
+        }
         binding?.backButton?.setOnClickListener { goBack() }
     }
     private fun showDatePicker() {
@@ -88,7 +105,6 @@ class SignUpScreen() : Fragment(R.layout.sign_up_screen) {
 
     private fun createViewModel(): RegistrationViewModel {
         val factory = RegistrationViewModelFactory(requireContext())
-
         return ViewModelProvider(this, factory)[RegistrationViewModel::class.java]
     }
 

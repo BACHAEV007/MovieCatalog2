@@ -335,20 +335,22 @@
             android:layout_height="match_parent">
 
             <Button
+                android:id="@+id/male_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/left_double_button"
+                android:background="@drawable/left_button_selector"
                 android:text="@string/man"
                 android:textAllCaps="false"
                 android:textColor="@color/white">
             </Button>
 
             <Button
+                android:id="@+id/female_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/right_double_button"
+                android:background="@drawable/right_button_selector"
                 android:text="@string/woman"
                 android:textAllCaps="false"
                 android:textColor="@color/white">

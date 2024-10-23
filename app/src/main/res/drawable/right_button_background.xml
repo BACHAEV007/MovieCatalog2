@@ -4,6 +4,6 @@
     <corners android:bottomRightRadius="8dp"
         android:topRightRadius="8dp"/>
     <solid
-        android:color="#333333"
+        android:color="@color/not_selected_button"
         />
 </shape>
