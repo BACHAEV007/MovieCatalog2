@@ -28,7 +28,7 @@ class MovieActivity : AppCompatActivity(R.layout.bottom_navigation) {
                     true
                 }
                 R.id.menu_movies -> {
-                    //replaceFragment(MoviesFragment())
+                    replaceFragment(MoviesScreen())
                     true
                 }
                 R.id.menu_favorites -> {
