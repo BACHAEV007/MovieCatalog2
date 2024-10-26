@@ -12,5 +12,6 @@
     <color name="not_selected_button">#333333</color>
     <color name="selected_button_end_gradient">#FFFF6633</color>
     <color name="selected_button_start_gradient">#FFDF2800</color>
+    <color name="average_gradient_color">#FFEF4719</color>
 
 </resources>

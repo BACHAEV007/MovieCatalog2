@@ -17,7 +17,7 @@ import java.util.Calendar
 class SignUpScreen() : Fragment(R.layout.sign_up_screen) {
     private var binding: SignUpScreenBinding? = null
     private lateinit var viewModel: RegistrationViewModel
-    var dateAndTime: Calendar = Calendar.getInstance()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -86,6 +86,7 @@ class SignUpScreen() : Fragment(R.layout.sign_up_screen) {
         binding?.backButton?.setOnClickListener { goBack() }
     }
     private fun showDatePicker() {
+        val dateAndTime: Calendar = Calendar.getInstance()
         val year = dateAndTime.get(Calendar.YEAR)
         val month = dateAndTime.get(Calendar.MONTH)
         val day = dateAndTime.get(Calendar.DAY_OF_MONTH)
@@ -94,7 +95,7 @@ class SignUpScreen() : Fragment(R.layout.sign_up_screen) {
             requireContext(),
             { _, selectedYear, selectedMonth, selectedDay ->
                 dateAndTime.set(selectedYear, selectedMonth, selectedDay)
-                viewModel.onDateChange(selectedYear, selectedMonth + 1, selectedDay)
+                viewModel.onDateChange(selectedYear, selectedMonth, selectedDay)
             },
             year,
             month,

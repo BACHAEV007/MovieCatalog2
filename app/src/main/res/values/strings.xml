@@ -23,4 +23,8 @@
     <string name="invalid_birthday">Введите корректную дату рождения</string>
     <string name="unique_login_error">Такой логин уже существует</string>
     <string name="unexpected_error">Неизвестная ошибка</string>
+    <string name="feed">Лента</string>
+    <string name="films">Фильмы</string>
+    <string name="favorites">Избранное</string>
+    <string name="profile">Профиль</string>
 </resources>

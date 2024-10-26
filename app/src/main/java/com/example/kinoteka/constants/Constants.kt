@@ -6,4 +6,6 @@ object Constants {
     const val LOGIN_URL = "account/login"
     const val TOKEN = "TOKEN"
     const val SHARED_PREFERENCES_NAME = "MY_APP"
+    const val GET_MOVIES_URL = "movies/{page}"
+    const val GET_MOVIE_DETAILS_URL = "movies/details/{id}"
 }

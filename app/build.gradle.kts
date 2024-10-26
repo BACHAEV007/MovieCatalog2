@@ -53,6 +53,8 @@ android {
 }
 
 dependencies {
+    implementation("com.squareup.picasso:picasso:2.8")
+    //implementation("com.github.bumptech.glide:glide:4.15.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation(libs.retrofit)
@@ -72,6 +74,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

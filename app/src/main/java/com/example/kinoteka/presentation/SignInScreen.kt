@@ -1,5 +1,6 @@
 package com.example.kinoteka.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -54,6 +55,8 @@ class SignInScreen : Fragment(R.layout.sign_in_screen) {
 
         binding?.signInButton?.setOnClickListener{
             viewModel.onLogin()
+            val intent = Intent(requireContext(), MovieActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -61,8 +64,6 @@ class SignInScreen : Fragment(R.layout.sign_in_screen) {
         super.onDestroyView()
         binding = null
     }
-
-
 
     private fun goBack() {
         parentFragmentManager.popBackStack()

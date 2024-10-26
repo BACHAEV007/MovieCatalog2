@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.kinoteka.data.datasource.TokenDataSource
 import com.example.kinoteka.data.mapper.NetworkMapper
-import com.example.kinoteka.data.network.api.ApiServiceInterface
 import com.example.kinoteka.data.network.api.RetrofitApiClient
 import com.example.kinoteka.data.repository.AuthRepositoryImpl
 import com.example.kinoteka.domain.usecase.RegisterUserUseCase
@@ -29,7 +28,7 @@ class RegistrationViewModelFactory(
 
             val tokenDataSource = TokenDataSource(context)
             val networkMapper = NetworkMapper()
-            val apiService = RetrofitApiClient.apiClient
+            val apiService = RetrofitApiClient.createAuthApi(tokenDataSource)
             val authRepository = AuthRepositoryImpl(apiService, tokenDataSource, networkMapper)
             val registerUserUseCase = RegisterUserUseCase(authRepository)
 

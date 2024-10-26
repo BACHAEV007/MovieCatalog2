@@ -187,7 +187,7 @@ class RegistrationViewModel(
 
     fun onRegister() {
         val birthDate = formatDateToISO(_registrationContent.value.dateOfBirthMillis)
-        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
+        viewModelScope.launch(exceptionHandler) {
             registerUserUseCase(
                 with(_registrationContent.value) {
                     UserRegisterModel(

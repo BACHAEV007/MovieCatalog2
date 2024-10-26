@@ -11,7 +11,6 @@ import com.example.kinoteka.domain.usecase.LoginUserUseCase
 import com.example.kinoteka.domain.usecase.ValidateLoginUseCase
 import com.example.kinoteka.domain.usecase.ValidatePasswordUseCase
 import com.example.kinoteka.presentation.viewmodel.LoginViewModel
-import com.example.kinoteka.presentation.viewmodel.RegistrationViewModel
 
 class LoginViewModelFactory(
     private val context: Context
@@ -23,7 +22,7 @@ class LoginViewModelFactory(
 
             val tokenDataSource = TokenDataSource(context)
             val networkMapper = NetworkMapper()
-            val apiService = RetrofitApiClient.apiClient
+            val apiService = RetrofitApiClient.createAuthApi(tokenDataSource)
             val authRepository = AuthRepositoryImpl(apiService, tokenDataSource, networkMapper)
             val loginUserUseCase = LoginUserUseCase(authRepository)
 
