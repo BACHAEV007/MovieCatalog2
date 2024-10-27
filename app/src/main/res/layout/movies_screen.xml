@@ -10,13 +10,51 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="horizontal">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+            </androidx.recyclerview.widget.RecyclerView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="6dp">
+                <ProgressBar
+                    android:id="@+id/progressBar1"
+                    style="@style/CarouselProgressBar"
+                    android:layout_marginEnd="4dp"/>
+                <ProgressBar
+                    android:id="@+id/progressBar2"
+                    style="@style/CarouselProgressBar"
+                    android:layout_marginEnd="4dp"/>
+                <ProgressBar
+                    android:id="@+id/progressBar3"
+                    style="@style/CarouselProgressBar"
+                    android:layout_marginEnd="4dp"/>
+                <ProgressBar
+                    android:id="@+id/progressBar4"
+                    style="@style/CarouselProgressBar"
+                    android:layout_marginEnd="4dp"/>
+                <ProgressBar
+                    android:id="@+id/progressBar5"
+                    style="@style/CarouselProgressBar"
+                    android:layout_marginEnd="4dp"/>
+
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </ScrollView>
 
