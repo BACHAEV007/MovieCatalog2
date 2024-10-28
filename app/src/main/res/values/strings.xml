@@ -27,4 +27,10 @@
     <string name="films">Фильмы</string>
     <string name="favorites">Избранное</string>
     <string name="profile">Профиль</string>
+    <string name="random_movie_button">Случайный фильм</string>
+    <string name="liked_text">Мне нравится</string>
+    <string name="all_text">Все</string>
+    <string name="all_movies">Все фильмы</string>
+    <string name="registration">Регистрация</string>
+    <string name="sex">Пол</string>
 </resources>

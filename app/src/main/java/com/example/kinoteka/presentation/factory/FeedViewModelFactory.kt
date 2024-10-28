@@ -8,7 +8,7 @@ import com.example.kinoteka.data.mapper.NetworkMapper
 import com.example.kinoteka.data.network.api.RetrofitApiClient
 import com.example.kinoteka.data.repository.MovieRepositoryImpl
 import com.example.kinoteka.domain.usecase.GetMoviesUseCase
-import com.example.kinoteka.presentation.mapper.MoviesToUIContentMapper
+import com.example.kinoteka.presentation.mapper.MoviesMapper
 import com.example.kinoteka.presentation.viewmodel.FeedViewModel
 
 class FeedViewModelFactory(
@@ -23,7 +23,7 @@ class FeedViewModelFactory(
             val apiService = RetrofitApiClient.createMovieApi(tokenDataSource)
             val movieRepository = MovieRepositoryImpl(apiService, networkMapper)
             val getMoviesUseCase = GetMoviesUseCase(movieRepository)
-            val movieToUIContentMapper = MoviesToUIContentMapper()
+            val movieToUIContentMapper = MoviesMapper()
             return FeedViewModel(getMoviesUseCase, movieToUIContentMapper) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

@@ -11,5 +11,5 @@ data class MovieElementModel(
     val year: Int,
     val country: String,
     val genres: List<Genre>,
-    //val reviews: List<ReviewShort>
+    val reviews: List<ReviewShortModel>
 )

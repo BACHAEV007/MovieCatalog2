@@ -4,7 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kinoteka.domain.model.LoginCredentials
+import com.example.kinoteka.domain.model.LoginCredentialsModel
 import com.example.kinoteka.domain.model.ValidationErrorType
 import com.example.kinoteka.domain.usecase.LoginUserUseCase
 import com.example.kinoteka.domain.usecase.ValidateLoginUseCase
@@ -72,7 +72,7 @@ class LoginViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             loginUserUseCase(
                 with(_loginContent.value) {
-                    LoginCredentials(
+                    LoginCredentialsModel(
                         userName = login,
                         password = password
                     )

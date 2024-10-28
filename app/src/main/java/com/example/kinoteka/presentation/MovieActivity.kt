@@ -36,7 +36,7 @@ class MovieActivity : AppCompatActivity(R.layout.bottom_navigation) {
                     true
                 }
                 R.id.menu_profile -> {
-                    //replaceFragment(ProfileFragment())
+                    replaceFragment(ProfileScreen())
                     true
                 }
                 else -> false

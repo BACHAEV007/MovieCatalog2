@@ -1,6 +1,6 @@
 package com.example.kinoteka.domain.model
 
-data class LoginCredentials(
+data class LoginCredentialsModel(
     val userName: String,
     val password: String
 )

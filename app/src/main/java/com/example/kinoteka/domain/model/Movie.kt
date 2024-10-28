@@ -8,6 +8,6 @@ data class Movie(
     val country: String,
     val genres: List<Genre>,
     //val reviews: List<ReviewShort>,
-    //val rating: Double?,
+    val averageRating: Float
     //var reviewRating: Int? = null
 )

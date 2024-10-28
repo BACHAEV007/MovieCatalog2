@@ -1,9 +1,10 @@
 package com.example.kinoteka.data.mapper
 
-import com.example.kinoteka.data.entity.LoginCredentialsDTO
+import com.example.kinoteka.data.entity.LoginCredentials
 import com.example.kinoteka.data.entity.MovieElementModel
+import com.example.kinoteka.data.entity.MoviesListModel
 import com.example.kinoteka.data.entity.UserRegisterDTO
-import com.example.kinoteka.domain.model.LoginCredentials
+import com.example.kinoteka.domain.model.LoginCredentialsModel
 import com.example.kinoteka.domain.model.Movie
 import com.example.kinoteka.domain.model.UserRegisterModel
 
@@ -18,8 +19,8 @@ class NetworkMapper {
             gender = this.gender
         )
     }
-    fun LoginCredentials.toDTO(): LoginCredentialsDTO{
-        return LoginCredentialsDTO(
+    fun LoginCredentialsModel.toDTO(): LoginCredentials {
+        return LoginCredentials(
             userName = this.userName,
             password = this.password
         )
@@ -33,10 +34,13 @@ class NetworkMapper {
             year = movieElementModel.year,
             country = movieElementModel.country,
             genres = movieElementModel.genres,
-            //averageRating = calculateAverageRating(movieElementModel.reviews)
+            averageRating = movieElementModel.reviews.sumOf { it.rating } / movieElementModel.reviews.size.toFloat()
         )
     }
 
+    fun fromMovieListDataToDomain(moviesListModel: MoviesListModel): List<Movie> {
+        return fromEntityList(moviesListModel.movies)
+    }
 
     fun fromEntityList(networkMovies: List<MovieElementModel>): List<Movie> {
         return networkMovies.map { fromEntity(it) }

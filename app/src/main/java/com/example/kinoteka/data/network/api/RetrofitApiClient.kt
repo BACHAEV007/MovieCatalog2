@@ -10,10 +10,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitApiClient {
-    val gson = GsonBuilder()
+    private val gson = GsonBuilder()
         .setLenient()
         .create()
-    fun createAuthApi(tokenDataSource: TokenDataSource): ApiServiceInterface {
+
+    private fun createRetrofit(tokenDataSource: TokenDataSource): Retrofit {
         val okHttpClient = OkHttpClient.Builder()
             .apply {
                 addInterceptor(Interceptor(tokenDataSource))
@@ -21,33 +22,24 @@ object RetrofitApiClient {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
             }
-
             .build()
 
-        val retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
-
-        return retrofit.create(ApiServiceInterface::class.java)
     }
+
+    fun createAuthApi(tokenDataSource: TokenDataSource): ApiServiceInterface {
+        return createRetrofit(tokenDataSource).create(ApiServiceInterface::class.java)
+    }
+
     fun createMovieApi(tokenDataSource: TokenDataSource): MovieApiService {
-        val okHttpClient = OkHttpClient.Builder()
-            .apply {
-                addInterceptor(Interceptor(tokenDataSource))
-                addInterceptor(HttpLoggingInterceptor().apply {
-                    level = HttpLoggingInterceptor.Level.BODY
-                })
-            }
-            .build()
+        return createRetrofit(tokenDataSource).create(MovieApiService::class.java)
+    }
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-
-        return retrofit.create(MovieApiService::class.java)
+    fun createFavouritesApi(tokenDataSource: TokenDataSource): FavouritesApiService {
+        return createRetrofit(tokenDataSource).create(FavouritesApiService::class.java)
     }
 }

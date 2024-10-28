@@ -2,9 +2,11 @@ package com.example.kinoteka.presentation
 
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.ProgressBar
+import androidx.cardview.widget.CardView
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,30 +15,41 @@ import com.example.kinoteka.R
 import com.example.kinoteka.databinding.MoviesScreenBinding
 import com.example.kinoteka.presentation.viewmodel.MoviesViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinoteka.data.datasource.TokenDataSource
 import com.example.kinoteka.data.mapper.NetworkMapper
 import com.example.kinoteka.data.network.api.RetrofitApiClient
+import com.example.kinoteka.domain.model.Gender
 import com.example.kinoteka.presentation.factory.MoviesViewModelFactory
-import com.example.kinoteka.presentation.mapper.MoviesToUIContentMapper
+import com.example.kinoteka.presentation.mapper.MoviesMapper
 import kotlinx.coroutines.launch
 
 class MoviesScreen : Fragment(R.layout.movies_screen) {
     private var binding: MoviesScreenBinding? = null
     private lateinit var viewModel: MoviesViewModel
     private val carouselAdapter = CarouselAdapter()
+    private val allMoviesAdapter = AllMoviesAdapter()
+    private val favouritesAdapter = FavouritesAdapter()
     private var currentAnimator: ValueAnimator? = null
     private var lastVisiblePosition = -1
+    private var currentPage = 1
+    private var isLoading = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = MoviesScreenBinding.bind(view)
-        setupRecyclerView()
-
+        setupAllMoviesRecyclerView()
+        setupRecyclerCarouselView()
+        setupFavouriteRecyclerView()
         viewModel = createViewModel()
-        viewModel.fetchMovies(page = 1)
+        viewModel.fetchMovies(page = currentPage)
+        viewModel.fetchFavourites()
         observeMovieContent()
+//        binding?.randomButton?.setOnClickListener {
+//            viewModel.addMovieToFavourite("b2ae5845-ff03-489d-a2a6-08d9b9f3d2a2")
+//        }
     }
 
     override fun onDestroyView() {
@@ -47,11 +60,12 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
     private fun createViewModel(): MoviesViewModel {
         val tokenDataSource = TokenDataSource(requireContext())
         val networkMapper = NetworkMapper()
-        val apiService = RetrofitApiClient.createMovieApi(tokenDataSource)
-        val movieToUIContentMapper = MoviesToUIContentMapper()
+        val movieApiService = RetrofitApiClient.createMovieApi(tokenDataSource)
+        val apiService = RetrofitApiClient.createFavouritesApi(tokenDataSource)
+        val movieToUIContentMapper = MoviesMapper()
         val factory = MoviesViewModelFactory(
-            tokenDataSource = tokenDataSource,
-            apiService = apiService,
+            favoritesApiService = apiService,
+            movieApiService = movieApiService,
             networkMapper = networkMapper,
             movieToUIContentMapper = movieToUIContentMapper
         )
@@ -63,11 +77,93 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
                 carouselAdapter.moviesList.clear()
                 carouselAdapter.moviesList.addAll(movieList)
                 carouselAdapter.notifyDataSetChanged()
+            }
+        }
 
+        lifecycleScope.launch {
+            viewModel.gridMoviesContent.collect { movieList ->
+                allMoviesAdapter.moviesList.clear()
+                isLoading = false
+                allMoviesAdapter.moviesList.addAll(movieList)
+                allMoviesAdapter.notifyDataSetChanged()
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.favouritesContent.collect { movieList ->
+                isLoading = false
+                favouritesAdapter.moviesList.clear()
+                favouritesAdapter.moviesList.addAll(movieList)
+                favouritesAdapter.notifyDataSetChanged()
             }
         }
     }
-    private fun setupRecyclerView() {
+    private fun setupFavouriteRecyclerView() {
+        val favouriteManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding?.favouritesRecycler?.apply {
+            layoutManager = favouriteManager
+            adapter = favouritesAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val firstVisibleItemPosition = favouriteManager.findFirstVisibleItemPosition()
+                    val lastVisibleItemPosition = favouriteManager.findLastVisibleItemPosition()
+
+                    for (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+                        val view = favouriteManager.findViewByPosition(i) ?: continue
+                        val cardView = view.findViewById<CardView>(R.id.favourite_card_view)
+                        val positionInMiddle = getMiddleItemPosition(favouriteManager, recyclerView, view)
+                        val scale = if (positionInMiddle == i) 1.1f else 1.0f
+                        scaleView(cardView, scale)
+                    }
+                }
+            })
+        }
+    }
+    private fun getMiddleItemPosition(
+        layoutManager: LinearLayoutManager,
+        recyclerView: RecyclerView,
+        view: View
+    ): Int {
+        val recyclerCenterX = (recyclerView.width / 2)
+        val viewCenterX = (view.left + view.right) / 2
+        val distanceFromCenter = Math.abs(recyclerCenterX - viewCenterX)
+        return if (distanceFromCenter < recyclerView.width / 4) layoutManager.getPosition(view) else -1
+    }
+    private fun scaleView(view: View, scale: Float) {
+        view.scaleX = scale
+        view.scaleY = scale
+    }
+    private fun setupAllMoviesRecyclerView() {
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+        binding?.gridRecycler?.apply {
+            layoutManager = gridLayoutManager
+            adapter = allMoviesAdapter
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val totalItemCount = gridLayoutManager.itemCount
+                    val lastVisibleItemPosition = gridLayoutManager.findLastVisibleItemPosition()
+
+                    // Если дошли до конца списка и не происходит загрузка, запрашиваем следующую страницу
+                    if (lastVisibleItemPosition >= totalItemCount - 5) {
+                        loadNextPage()
+                    }
+                }
+            })
+        }
+    }
+    private fun loadNextPage() {
+        if (currentPage <= 5) {
+            isLoading = true
+            currentPage++
+            viewModel.fetchMovies(page = currentPage)
+            Log.d("ZALUPA","${viewModel.gridMoviesContent.value.size}")
+        }
+    }
+    private fun setupRecyclerCarouselView() {
         val carouselManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding?.recycler?.apply {
             layoutManager = carouselManager

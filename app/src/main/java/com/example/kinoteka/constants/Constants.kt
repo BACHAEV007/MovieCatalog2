@@ -8,4 +8,7 @@ object Constants {
     const val SHARED_PREFERENCES_NAME = "MY_APP"
     const val GET_MOVIES_URL = "movies/{page}"
     const val GET_MOVIE_DETAILS_URL = "movies/details/{id}"
+    const val GET_FAVORITES_URL = "favorites"
+    const val ADD_FAVORITE_URL = "favorites/{id}/add"
+    const val DELETE_FAVORITE_URL = "favorites/{id}/delete"
 }
