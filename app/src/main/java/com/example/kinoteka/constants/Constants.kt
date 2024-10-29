@@ -11,4 +11,5 @@ object Constants {
     const val GET_FAVORITES_URL = "favorites"
     const val ADD_FAVORITE_URL = "favorites/{id}/add"
     const val DELETE_FAVORITE_URL = "favorites/{id}/delete"
+    const val ACCOUNT_PROFILE_URL = "account/profile"
 }

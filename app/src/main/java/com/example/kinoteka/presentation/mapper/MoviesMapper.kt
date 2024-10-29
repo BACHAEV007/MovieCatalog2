@@ -20,7 +20,7 @@ class MoviesMapper {
                     name = genre.name
                 )
             },
-            rating = ((movie.averageRating * 10).roundToInt() / 10.0f).toFloat()
+            rating = ((movie.averageRating * 10).roundToInt() / 10.0f)
         )
     }
 

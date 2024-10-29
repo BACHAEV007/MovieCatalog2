@@ -27,10 +27,6 @@ class ProfileScreen : Fragment(R.layout.profile_screen) {
         binding = ProfileScreenBinding.bind(view)
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null

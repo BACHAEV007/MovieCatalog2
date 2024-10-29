@@ -1,15 +1,12 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.adaptor
 
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinoteka.R
 import com.example.kinoteka.databinding.FavouriteItemBinding
 import com.example.kinoteka.presentation.model.FavouriteContent
-import com.example.kinoteka.presentation.model.MovieContent
 import com.squareup.picasso.Picasso
 
 class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.FavouritesHolder>(){

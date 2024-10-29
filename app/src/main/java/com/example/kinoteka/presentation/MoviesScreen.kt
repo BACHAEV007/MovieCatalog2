@@ -21,7 +21,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.kinoteka.data.datasource.TokenDataSource
 import com.example.kinoteka.data.mapper.NetworkMapper
 import com.example.kinoteka.data.network.api.RetrofitApiClient
-import com.example.kinoteka.domain.model.Gender
+import com.example.kinoteka.presentation.adaptor.AllMoviesAdapter
+import com.example.kinoteka.presentation.adaptor.CarouselAdapter
+import com.example.kinoteka.presentation.adaptor.FavouritesAdapter
 import com.example.kinoteka.presentation.factory.MoviesViewModelFactory
 import com.example.kinoteka.presentation.mapper.MoviesMapper
 import kotlinx.coroutines.launch

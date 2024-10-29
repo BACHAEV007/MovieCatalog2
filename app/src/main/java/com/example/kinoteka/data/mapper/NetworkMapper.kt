@@ -3,9 +3,11 @@ package com.example.kinoteka.data.mapper
 import com.example.kinoteka.data.entity.LoginCredentials
 import com.example.kinoteka.data.entity.MovieElementModel
 import com.example.kinoteka.data.entity.MoviesListModel
+import com.example.kinoteka.data.entity.ProfileModel
 import com.example.kinoteka.data.entity.UserRegisterDTO
 import com.example.kinoteka.domain.model.LoginCredentialsModel
 import com.example.kinoteka.domain.model.Movie
+import com.example.kinoteka.domain.model.ProfileInfo
 import com.example.kinoteka.domain.model.UserRegisterModel
 
 class NetworkMapper {
@@ -44,5 +46,16 @@ class NetworkMapper {
 
     fun fromEntityList(networkMovies: List<MovieElementModel>): List<Movie> {
         return networkMovies.map { fromEntity(it) }
+    }
+
+    fun fromProfileModelToDomain(profileModel: ProfileModel): ProfileInfo{
+        return ProfileInfo(
+            nickName = profileModel.nickName,
+            name = profileModel.name,
+            avatarLink = profileModel.avatarLink,
+            email = profileModel.email,
+            birthDate = profileModel.birthDate,
+            gender = profileModel.gender
+        )
     }
 }

@@ -1,15 +1,13 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.adaptor
 
 import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kinoteka.R
 import com.example.kinoteka.databinding.AllMoviesGridItemBinding
-import com.example.kinoteka.databinding.MovieItemCarouselBinding
 import com.example.kinoteka.presentation.model.MovieContent
 import com.squareup.picasso.Picasso
 

@@ -1,4 +1,4 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.adaptor
 
 import android.view.LayoutInflater
 import android.view.View
