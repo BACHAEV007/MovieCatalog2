@@ -33,4 +33,8 @@
     <string name="all_movies">Все фильмы</string>
     <string name="registration">Регистрация</string>
     <string name="sex">Пол</string>
+    <string name="good_morning">Доброе утро,</string>
+    <string name="good_day">Добрый день,</string>
+    <string name="good_evening">Добрый вечер,</string>
+    <string name="good_night">Доброй ночи,</string>
 </resources>

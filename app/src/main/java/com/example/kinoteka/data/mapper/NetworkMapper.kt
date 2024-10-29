@@ -5,6 +5,7 @@ import com.example.kinoteka.data.entity.MovieElementModel
 import com.example.kinoteka.data.entity.MoviesListModel
 import com.example.kinoteka.data.entity.ProfileModel
 import com.example.kinoteka.data.entity.UserRegisterDTO
+import com.example.kinoteka.domain.model.Gender
 import com.example.kinoteka.domain.model.LoginCredentialsModel
 import com.example.kinoteka.domain.model.Movie
 import com.example.kinoteka.domain.model.ProfileInfo
@@ -52,10 +53,10 @@ class NetworkMapper {
         return ProfileInfo(
             nickName = profileModel.nickName,
             name = profileModel.name,
-            avatarLink = profileModel.avatarLink,
+            avatarLink = profileModel.avatarLink ?: "",
             email = profileModel.email,
             birthDate = profileModel.birthDate,
-            gender = profileModel.gender
+            gender = if (profileModel.gender == 0) Gender.MALE else Gender.FEMALE
         )
     }
 }

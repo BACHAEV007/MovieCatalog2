@@ -8,5 +8,5 @@ data class ProfileInfo(
     val avatarLink: String,
     val email: String,
     val birthDate: String = "",
-    val gender: Int = 0
+    val gender: Gender = Gender.MALE
 )

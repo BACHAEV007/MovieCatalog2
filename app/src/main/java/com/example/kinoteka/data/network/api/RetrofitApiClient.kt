@@ -42,4 +42,8 @@ object RetrofitApiClient {
     fun createFavouritesApi(tokenDataSource: TokenDataSource): FavouritesApiService {
         return createRetrofit(tokenDataSource).create(FavouritesApiService::class.java)
     }
+
+    fun createProfileApi(tokenDataSource: TokenDataSource): ProfileApiService {
+        return createRetrofit(tokenDataSource).create(ProfileApiService::class.java)
+    }
 }

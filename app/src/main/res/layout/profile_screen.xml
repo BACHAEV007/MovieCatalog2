@@ -65,7 +65,8 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/avatar_image"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"></ImageView>
+                    app:layout_constraintTop_toTopOf="parent">
+                </ImageView>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout3"
@@ -87,6 +88,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        android:id="@+id/greeting_name"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:lineHeight="32dp"
@@ -299,7 +301,8 @@
                         android:background="@drawable/left_button_selector"
                         android:text="@string/man"
                         android:textAllCaps="false"
-                        android:textColor="@color/white"></Button>
+                        android:textColor="@color/white">
+                    </Button>
 
                     <Button
                         android:id="@+id/female_button"
@@ -309,7 +312,8 @@
                         android:background="@drawable/right_button_selector"
                         android:text="@string/woman"
                         android:textAllCaps="false"
-                        android:textColor="@color/white"></Button>
+                        android:textColor="@color/white">
+                    </Button>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
