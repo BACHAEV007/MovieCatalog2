@@ -2,7 +2,6 @@ package com.example.kinoteka.presentation
 
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.ProgressBar
@@ -153,7 +152,6 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
                     val totalItemCount = gridLayoutManager.itemCount
                     val lastVisibleItemPosition = gridLayoutManager.findLastVisibleItemPosition()
 
-                    // Если дошли до конца списка и не происходит загрузка, запрашиваем следующую страницу
                     if (lastVisibleItemPosition >= totalItemCount - 5) {
                         loadNextPage()
                     }
@@ -166,7 +164,6 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
             isLoading = true
             currentPage++
             viewModel.fetchMovies(page = currentPage)
-            Log.d("ZALUPA","${viewModel.gridMoviesContent.value.size}")
         }
     }
     private fun setupRecyclerCarouselView() {
@@ -233,7 +230,7 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
 
         currentAnimator?.cancel()
         currentAnimator = ValueAnimator.ofInt(0, 100).apply {
-            duration = 5000L // 5 секунд для заполнения
+            duration = 5000L
             interpolator = LinearInterpolator()
             addUpdateListener { animation ->
                 progressBar.progress = animation.animatedValue as Int
