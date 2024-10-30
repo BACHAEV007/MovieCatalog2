@@ -6,4 +6,5 @@ import com.example.kinoteka.domain.model.UserRegisterModel
 interface AuthRepository {
     suspend fun register(userRegisterModel: UserRegisterModel)
     suspend fun login(loginBody: LoginCredentialsModel)
+    suspend fun logout()
 }

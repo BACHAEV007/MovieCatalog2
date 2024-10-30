@@ -6,15 +6,15 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProfileModel(
     @SerialName("nickName")
-    val nickName: String,
+    val nickName: String = "",
     @SerialName("name")
-    val name: String,
+    val name: String = "Вася",
     @SerialName("avatarLink")
-    val avatarLink: String,
+    val avatarLink: String?,
     @SerialName("email")
-    val email: String,
+    val email: String = "user@example.com",
     @SerialName("birthDate")
-    val birthDate: String = "",
+    val birthDate: String = "2024-10-30T07:24:56.845Z",
     @SerialName("gender")
     val gender: Int = 0
 )

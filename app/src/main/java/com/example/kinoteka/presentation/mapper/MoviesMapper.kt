@@ -2,8 +2,10 @@ package com.example.kinoteka.presentation.mapper
 
 import com.example.kinoteka.domain.model.Genre
 import com.example.kinoteka.domain.model.Movie
+import com.example.kinoteka.domain.model.MovieDetails
 import com.example.kinoteka.presentation.model.FavouriteContent
 import com.example.kinoteka.presentation.model.MovieContent
+import com.example.kinoteka.presentation.model.MovieDetailsContent
 import kotlin.math.roundToInt
 
 class MoviesMapper {
@@ -29,6 +31,25 @@ class MoviesMapper {
             id = movie.id,
             poster = movie.poster,
             rating = ((movie.averageRating * 10).roundToInt() / 10.0f).toString()
+        )
+    }
+
+    fun mapToMovieDetailsContent(movieDetails: MovieDetails): MovieDetailsContent {
+        return MovieDetailsContent(
+            ageLimit = movieDetails.ageLimit,
+            budget = movieDetails.budget,
+            country = movieDetails.country,
+            description = movieDetails.description,
+            director = movieDetails.director,
+            fees = movieDetails.fees,
+            genres = movieDetails.genres,
+            id = movieDetails.id,
+            name = movieDetails.name,
+            poster = movieDetails.poster,
+            reviews = movieDetails.reviews,
+            tagline = movieDetails.tagline,
+            time = movieDetails.time,
+            year = movieDetails.year
         )
     }
 

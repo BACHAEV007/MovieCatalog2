@@ -10,7 +10,5 @@ data class MovieContent(
     val country: String = "Страна",
     val genres: List<Genre> = emptyList(),
     var progress: Int = 0,
-    //val reviews: List<ReviewShort>?,
     val rating: Float? = 0.0f
-    //var reviewRating: Int? = null
 )

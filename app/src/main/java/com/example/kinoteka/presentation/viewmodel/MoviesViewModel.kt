@@ -61,6 +61,11 @@ class MoviesViewModel(
         }
     }
 
+    fun getRandomMovie(): String {
+        val movies = _allMovies
+        return movies.random().id
+    }
+
     fun getCarouselMovies() {
         viewModelScope.launch(Dispatchers.IO) {
             val firstFiveMovies = _allMovies.take(5)

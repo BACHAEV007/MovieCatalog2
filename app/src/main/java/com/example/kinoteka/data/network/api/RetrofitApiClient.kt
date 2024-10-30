@@ -31,8 +31,8 @@ object RetrofitApiClient {
             .build()
     }
 
-    fun createAuthApi(tokenDataSource: TokenDataSource): ApiServiceInterface {
-        return createRetrofit(tokenDataSource).create(ApiServiceInterface::class.java)
+    fun createAuthApi(tokenDataSource: TokenDataSource): AuthApiService {
+        return createRetrofit(tokenDataSource).create(AuthApiService::class.java)
     }
 
     fun createMovieApi(tokenDataSource: TokenDataSource): MovieApiService {

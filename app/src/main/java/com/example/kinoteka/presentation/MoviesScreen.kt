@@ -52,6 +52,10 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
 //        binding?.randomButton?.setOnClickListener {
 //            viewModel.addMovieToFavourite("b2ae5845-ff03-489d-a2a6-08d9b9f3d2a2")
 //        }
+        binding?.randomButton?.setOnClickListener {
+            val randomMovieId = viewModel.getRandomMovie()
+            //findNavController().navigate("movie_details_screen/$randomMovieId")
+        }
     }
 
     override fun onDestroyView() {

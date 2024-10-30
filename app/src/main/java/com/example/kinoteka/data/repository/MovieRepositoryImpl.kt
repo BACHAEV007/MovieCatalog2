@@ -4,6 +4,7 @@ import com.example.kinoteka.data.entity.MovieElementModel
 import com.example.kinoteka.data.mapper.NetworkMapper
 import com.example.kinoteka.data.network.api.MovieApiService
 import com.example.kinoteka.domain.model.Movie
+import com.example.kinoteka.domain.model.MovieDetails
 import com.example.kinoteka.domain.repository.MovieRepository
 
 class MovieRepositoryImpl(
@@ -15,7 +16,8 @@ class MovieRepositoryImpl(
         return networkMapper.fromEntityList(response.movies)
     }
 
-    override suspend fun getMovieDetails() {
-        TODO("Not yet implemented")
+    override suspend fun getMovieDetails(id: String) : MovieDetails{
+        val response = movieApiService.getMovieDetails(id)
+        return networkMapper.fromMovieDetailsDataToDomain(response)
     }
 }

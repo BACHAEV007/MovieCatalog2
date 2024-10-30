@@ -9,12 +9,20 @@ import com.example.kinoteka.constants.Constants.TOKEN
 class TokenDataSource(context: Context) {
     var sharedPreferences: SharedPreferences =
         context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+
     fun saveToken(token: String) {
         sharedPreferences.edit()
             .putString(TOKEN, token)
             .apply()
     }
+
     fun getToken() : String? {
         return sharedPreferences.getString(TOKEN,null)
+    }
+
+    fun deleteToken() {
+        sharedPreferences.edit()
+            .remove(TOKEN)
+            .apply()
     }
 }

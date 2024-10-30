@@ -37,4 +37,6 @@
     <string name="good_day">Добрый день,</string>
     <string name="good_evening">Добрый вечер,</string>
     <string name="good_night">Доброй ночи,</string>
+    <string name="accept">Применить</string>
+    <string name="back">Назад</string>
 </resources>

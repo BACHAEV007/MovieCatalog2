@@ -14,6 +14,7 @@ fragment = "1.8.4"
 appcompat = "1.7.0"
 lifecycleViewmodelKtx = "2.8.6"
 material = "1.12.0"
+lifecycleViewmodelComposeAndroid = "2.8.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +39,7 @@ androidx-fragment = { group = "androidx.fragment", name = "fragment", version.re
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-lifecycle-viewmodel-compose-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose-android", version.ref = "lifecycleViewmodelComposeAndroid" }
 
 
 [plugins]

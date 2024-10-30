@@ -1,5 +1,6 @@
 package com.example.kinoteka.data.repository
 
+import com.example.kinoteka.data.entity.ProfileModel
 import com.example.kinoteka.data.mapper.NetworkMapper
 import com.example.kinoteka.data.network.api.ProfileApiService
 import com.example.kinoteka.domain.model.ProfileInfo
@@ -12,5 +13,9 @@ class ProfileRepositoryImpl (
     override suspend fun getProfileInfo(): ProfileInfo {
         val response = profileApiService.getProfileInfo()
         return networkMapper.fromProfileModelToDomain(response)
+    }
+
+    override suspend fun updateAvatar(profileInfo: ProfileInfo) {
+        profileApiService.updateAvatar(networkMapper.fromProfileModelToData(profileInfo))
     }
 }

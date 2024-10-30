@@ -17,6 +17,17 @@ class ProfileMapper {
         )
     }
 
+    fun mapToProfileDomain(profileContent: ProfileContent): ProfileInfo {
+        return ProfileInfo(
+            nickName = profileContent.nickName,
+            name = profileContent.name,
+            avatarLink = profileContent.avatarLink,
+            email = profileContent.email,
+            birthDate = parseDateToServerFormat(profileContent.birthDate),
+            gender = profileContent.gender
+        )
+    }
+
     private fun formatDate(dateString: String): String {
         return try {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
@@ -25,8 +36,19 @@ class ProfileMapper {
             val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
             outputFormat.format(date!!)
         } catch (e: Exception) {
-
             dateString
         }
     }
+    private fun parseDateToServerFormat(dateString: String): String {
+        return try {
+            val inputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
+            val date = inputFormat.parse(dateString)
+
+            val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
+            outputFormat.format(date!!)
+        } catch (e: Exception) {
+            dateString
+        }
+    }
+
 }
