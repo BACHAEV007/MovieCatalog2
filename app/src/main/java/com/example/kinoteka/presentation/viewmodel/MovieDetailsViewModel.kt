@@ -19,7 +19,8 @@ class MovieDetailsViewModel(
     private val contentMapper: MoviesMapper
 ) : ViewModel() {
     private val _movieDetails: MutableState<MovieDetailsContent?> = mutableStateOf(null)
-    val movieDetails: State<MovieDetailsContent?> = _movieDetails
+    val movieDetails: State<MovieDetailsContent?>// = _movieDetails
+        get() = _movieDetails
 
     private val _isFavorite: MutableState<Boolean> = mutableStateOf(false)
     val isFavorite: State<Boolean> = _isFavorite

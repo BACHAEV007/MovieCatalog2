@@ -39,6 +39,7 @@ class ProfileMapper {
             dateString
         }
     }
+
     private fun parseDateToServerFormat(dateString: String): String {
         return try {
             val inputFormat = SimpleDateFormat("dd MMMM yyyy", Locale("ru"))
