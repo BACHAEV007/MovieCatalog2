@@ -56,6 +56,7 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
     implementation(libs.coil.kt.compose)
     //implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("androidx.navigation:navigation-compose:2.7.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation(libs.retrofit)

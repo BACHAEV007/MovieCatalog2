@@ -61,7 +61,7 @@ class NetworkMapper {
             poster = movieDetailsModel.poster,
             reviews = movieDetailsModel.reviews.map { reviewModel ->
                 Review(
-                    author = fromAuthorModelToAuthor(reviewModel.author),
+                    author = reviewModel.author?.let { fromAuthorModelToAuthor(it) },
                     createDateTime = reviewModel.createDateTime,
                     id = reviewModel.id,
                     isAnonymous = reviewModel.isAnonymous,
@@ -77,7 +77,7 @@ class NetworkMapper {
 
     fun fromAuthorModelToAuthor(authorModel: AuthorModel): Author {
         return Author(
-            avatar = authorModel.avatar,
+            avatar = authorModel?.avatar ?: "",
             nickName = authorModel.nickName,
             userId = authorModel.userId
         )

@@ -1,6 +1,7 @@
 package com.example.kinoteka.presentation
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -48,12 +49,12 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
         viewModel.fetchMovies(page = currentPage)
         viewModel.fetchFavourites()
         observeMovieContent()
-//        binding?.randomButton?.setOnClickListener {
-//            viewModel.addMovieToFavourite("b2ae5845-ff03-489d-a2a6-08d9b9f3d2a2")
-//        }
         binding?.randomButton?.setOnClickListener {
             val randomMovieId = viewModel.getRandomMovie()
-            //findNavController().navigate("movie_details_screen/$randomMovieId")
+            val intent = Intent(requireContext(), MovieDetailsActivity::class.java).apply {
+                putExtra("MOVIE_ID", randomMovieId)
+            }
+            startActivity(intent)
         }
     }
 
