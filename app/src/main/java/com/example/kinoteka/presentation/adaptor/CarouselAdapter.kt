@@ -24,9 +24,9 @@ class CarouselAdapter : RecyclerView.Adapter<CarouselAdapter.CarouselHolder>() {
                     .into(poster)
             }
             movieTitle.text = movie.name
-            firstGenre.text = movie.genres[0].name
-            secondGenre.text = movie.genres[1].name
-            thirdGenre.text = movie.genres[2].name
+            firstGenre.text = movie.genres.getOrNull(0)?.name ?: ""
+            secondGenre.text = movie.genres.getOrNull(1)?.name ?: ""
+            thirdGenre.text = movie.genres.getOrNull(2)?.name ?: ""
         }
     }
 

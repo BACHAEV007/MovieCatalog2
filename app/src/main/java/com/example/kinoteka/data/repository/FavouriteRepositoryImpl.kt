@@ -18,7 +18,7 @@ class FavouriteRepositoryImpl (
     }
 
     override suspend fun deleteFavourite(id: String) {
-        TODO("Not yet implemented")
+        favoritesApiService.deleteFavorite(id)
     }
 
 }

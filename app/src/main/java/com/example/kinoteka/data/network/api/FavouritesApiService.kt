@@ -16,5 +16,5 @@ interface FavouritesApiService {
     @POST(ADD_FAVORITE_URL)
     suspend fun addFavorite(@Path("id") id: String)
     @DELETE(DELETE_FAVORITE_URL)
-    suspend fun deleteFavorite(@Body id: String)
+    suspend fun deleteFavorite(@Path("id") id: String)
 }

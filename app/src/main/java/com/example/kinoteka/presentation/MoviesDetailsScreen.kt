@@ -1,5 +1,8 @@
 package com.example.kinoteka.presentation
 
+import android.app.Activity
+import android.graphics.drawable.shapes.RoundRectShape
+import android.util.Log
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,7 +20,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -41,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -63,17 +70,27 @@ import com.example.kinoteka.presentation.factory.MovieDetailsViewModelFactory
 import com.example.kinoteka.presentation.mapper.MoviesMapper
 import com.example.kinoteka.presentation.viewmodel.MovieDetailsViewModel
 import okhttp3.internal.addHeaderLenient
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
-fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
+fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel, activity: Activity) {
     val movieDetails by viewModel.movieDetails
+    val isFavourite by viewModel.isFavorite
+    val movieRating by viewModel.movieRating
+    val authorAvatar by viewModel.authorContent
+    val reviews = movieDetails?.reviews ?: emptyList()
+    var currentReviewIndex by remember { mutableStateOf(0) }
+    val currentReview = reviews.getOrNull(currentReviewIndex)
+
     movieDetails?.let { details ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colorResource(R.color.app_background))
         ) {
-                        AsyncImage(
+            AsyncImage(
 
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(details.poster)
@@ -83,16 +100,9 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(464.dp)
-                    .clip(shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
+                    .clip(shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)),
+                contentScale = ContentScale.Crop
             )
-//            Image(
-//                painter = painterResource(id = R.drawable.example),
-//                contentDescription = "Translated description of what the image contains",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(464.dp)
-//                    .clip(shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
-//            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -101,7 +111,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick = { /* Действие на нажатие */ },
+                    onClick = { activity.finish() },
                     Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .size(width = 40.dp, height = 40.dp)
@@ -115,20 +125,33 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                 }
                 Spacer(Modifier.size(16.dp))
                 Text(
-                    text = "1899",
+                    text = "Название фильма",
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(
-                    onClick = { /* Действие на нажатие */ }, Modifier
+                    onClick = {
+                        if (isFavourite) {
+                            viewModel.removeFromFavorites(details.id)
+                        } else {
+                            viewModel.addToFavorites(details.id)
+                        }
+                    },
+                    Modifier
                         .clip(RoundedCornerShape(8.dp))
                         .size(width = 40.dp, height = 40.dp)
-                        .background(color = colorResource(R.color.not_selected_button))
+                        .background(
+                            color = if (isFavourite) colorResource(R.color.average_gradient_color)
+                            else colorResource(R.color.not_selected_button)
+                        )
                 ) {
                     Icon(
-                        imageVector = Icons.Default.FavoriteBorder,
+                        painter = painterResource(
+                            id = if (isFavourite) R.drawable.liked_ic_fill
+                            else R.drawable.liked_ic
+                        ),
                         contentDescription = "Favorite",
                         tint = Color.White
                     )
@@ -155,7 +178,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                             ),
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .padding(16.dp) 
+                        .padding(16.dp)
                 ) {
                     Column {
                         Text(
@@ -163,11 +186,13 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                             color = Color.White,
                             fontSize = 36.sp
                         )
-                        Text(
-                            text = "What is lost will be found",
-                            color = Color.White,
-                            fontSize = 20.sp
-                        )
+                        if (details.tagline != "-") {
+                            Text(
+                                text = details.tagline,
+                                color = Color.White,
+                                fontSize = 20.sp
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -178,7 +203,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                             color = colorResource(R.color.not_selected_button),
                             shape = RoundedCornerShape(8.dp)
                         )
-                        .padding(16.dp) 
+                        .padding(16.dp)
                 ) {
                     Row(
                         modifier = Modifier
@@ -198,28 +223,30 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = colorResource(R.color.not_selected_button),
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                        .padding(16.dp) 
-                ) {
-                    Row(
+                if (details.description != "-") {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .align(Alignment.Center),
-                        verticalAlignment = Alignment.CenterVertically
+                            .background(
+                                color = colorResource(R.color.not_selected_button),
+                                shape = RoundedCornerShape(8.dp)
+                            )
+                            .padding(16.dp)
                     ) {
-                        Text(
-                            text = "Группа европейских мигрантов покидает Лондон на пароходе, чтобы начать новую жизнь в Нью-Йорке. Когда они сталкиваются с другим судном, плывущим по течению в открытом море, их путешествие превращается в кошмар",
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            lineHeight = 20.sp
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .align(Alignment.Center),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "${details.description}",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                lineHeight = 20.sp
+                            )
+                        }
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
@@ -297,7 +324,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                     )
                                     Spacer(modifier = Modifier.size(8.dp))
                                     Text(
-                                        text = "7.1",
+                                        text = "${movieRating!!.ratingKinopoisk}",
                                         fontSize = 20.sp,
                                         color = Color.White
                                     )
@@ -320,7 +347,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                     )
                                     Spacer(modifier = Modifier.size(8.dp))
                                     Text(
-                                        text = "7.3",
+                                        text = "${movieRating!!.ratingImdb}",
                                         fontSize = 20.sp,
                                         color = Color.White
                                     )
@@ -381,7 +408,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                         fontSize = 14.sp
                                     )
                                     Text(
-                                        text = "Германия, США",
+                                        text = "${details.country}",
                                         fontSize = 16.sp,
                                         color = Color.White
                                     )
@@ -404,7 +431,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                         fontSize = 14.sp
                                     )
                                     Text(
-                                        text = "16+",
+                                        text = "${details.ageLimit}+",
                                         fontSize = 16.sp,
                                         color = Color.White
                                     )
@@ -434,7 +461,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                         fontSize = 14.sp
                                     )
                                     Text(
-                                        text = "1 ч 30 мин",
+                                        text = "${details.time}",
                                         fontSize = 16.sp,
                                         color = Color.White,
                                         lineHeight = 20.sp
@@ -458,7 +485,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                         fontSize = 14.sp
                                     )
                                     Text(
-                                        text = "2022",
+                                        text = "${details.year}",
                                         fontSize = 16.sp,
                                         color = Color.White,
                                         lineHeight = 20.sp
@@ -516,14 +543,21 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Image(
-                                        painter = painterResource(R.drawable.avatar_image),
-                                        contentDescription = "avatar_1",
-                                        Modifier.size(width = 48.dp, height = 48.dp)
+                                    AsyncImage(
+
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data(authorAvatar!!.avatar)
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = "Translated description of what the image contains",
+                                        modifier = Modifier
+                                            .size(width = 48.dp, height = 48.dp)
+                                            .clip(CircleShape),
+                                        contentScale = ContentScale.Crop
                                     )
                                     Spacer(modifier = Modifier.size(8.dp))
                                     Text(
-                                        text = "Баран бо Одар",
+                                        text = "${details.director}",
                                         fontSize = 16.sp,
                                         color = Color.White,
                                         lineHeight = 20.sp
@@ -563,60 +597,28 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
 
                         }
                         Spacer(modifier = Modifier.height(12.dp))
-                        Row(
+                        LazyRow(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = colorResource(R.color.app_background),
-                                        shape = RoundedCornerShape(8.dp)
+                            items(details.genres) { genre ->
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            color = colorResource(R.color.app_background),
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
+                                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                                ) {
+                                    Text(
+                                        text = genre.name,
+                                        fontSize = 16.sp,
+                                        color = Color.White
                                     )
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                            ) {
-                                Text(
-                                    text = "триллер",
-                                    fontSize = 16.sp,
-                                    color = Color.White
-                                )
-
+                                }
+                                Spacer(modifier = Modifier.size(8.dp))
                             }
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = colorResource(R.color.app_background),
-                                        shape = RoundedCornerShape(8.dp)
-                                    )
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                            ) {
-
-                                Text(
-                                    text = "драма",
-                                    fontSize = 16.sp,
-                                    color = Color.White
-                                )
-                            }
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Box(
-                                modifier = Modifier
-                                    .background(
-                                        color = colorResource(R.color.app_background),
-                                        shape = RoundedCornerShape(8.dp)
-                                    )
-                                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                            ) {
-
-                                Text(
-                                    text = "фантастика",
-                                    fontSize = 16.sp,
-                                    color = Color.White
-                                )
-
-                            }
-
                         }
                     }
                 }
@@ -671,7 +673,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                         fontSize = 14.sp
                                     )
                                     Text(
-                                        text = "$ 15 000 000",
+                                        text = "$ ${details.budget}",
                                         fontSize = 16.sp,
                                         color = Color.White,
                                         lineHeight = 20.sp
@@ -695,7 +697,7 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                                         fontSize = 14.sp
                                     )
                                     Text(
-                                        text = "$ 30 000 000",
+                                        text = "$ ${details.fees}",
                                         fontSize = 16.sp,
                                         color = Color.White,
                                         lineHeight = 20.sp
@@ -715,175 +717,190 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel) {
                             shape = RoundedCornerShape(8.dp)
                         )
                 ) {
-                    Column {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Image(
-                                painter = painterResource(R.drawable.review_icon),
-                                contentDescription = "avatar_1"
-                            )
-                            Text(
-                                text = "Отзывы",
-                                color = colorResource(R.color.gray),
-                                fontSize = 16.sp,
-                                lineHeight = 20.sp
-                            )
-
-                        }
-                        Box(
-                            modifier = Modifier
-                                .padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = 16.dp
-                                )
-                                .background(
-                                    color = colorResource(R.color.app_background),
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                        ) {
-                            Column(modifier = Modifier.padding(12.dp)) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Image(
-                                        painter = painterResource(R.drawable.avatar_image),
-                                        contentDescription = "avatar_1",
-                                        Modifier.size(width = 32.dp, height = 32.dp)
-                                    )
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(
-                                                start = 8.dp,
-                                                end = 8.dp
-                                            )
-                                            .fillMaxWidth(0.79f)
-                                    ) {
-                                        Text(
-                                            text = "Анонимный пользователь",
-                                            fontSize = 12.sp,
-                                            lineHeight = 14.4.sp,
-                                            color = Color.White
-                                        )
-                                        Text(
-                                            text = "17 октября 2024",
-                                            fontSize = 12.sp,
-                                            lineHeight = 14.4.sp,
-                                            color = colorResource(R.color.gray_faded)
-                                        )
-                                    }
-                                    Row(
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(4.dp))
-                                            .background(colorResource(R.color.marks_nine))
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(R.drawable.review_star_ic),
-                                            contentDescription = null,
-                                            tint = Color.White,
-                                            modifier = Modifier.padding(
-                                                start = 8.dp,
-                                                top = 6.dp,
-                                                bottom = 6.dp,
-                                                end = 4.dp
-                                            )
-                                        )
-                                        Text(
-                                            text = "10",
-                                            fontSize = 16.sp,
-                                            lineHeight = 20.sp,
-                                            color = Color.White,
-                                            modifier = Modifier
-                                                .padding(
-                                                    top = 4.dp,
-                                                    bottom = 4.dp,
-                                                    end = 8.dp
-                                                )
-                                        )
-                                    }
-                                }
-                                Text(
-                                    "Если у вас взорвался мозг от «Тьмы» и вам это понравилось, то не переживайте. Новый сериал Барана бо Одара «1899» получился не хуже предшественника",
-                                    fontSize = 14.sp,
-                                    lineHeight = 20.sp,
-                                    color = Color.White,
-                                    modifier = Modifier
-                                        .padding(
-                                            top = 8.dp
-                                        )
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier
-                                .padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = 16.dp
-                                )
-                                .fillMaxWidth()
-                        ) {
-                            TextButton(
-                                onClick = {},
+                    if (currentReview != null) {
+                        Column {
+                            Row(
                                 modifier = Modifier
-                                    .padding(end = 24.dp)
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.review_icon),
+                                    contentDescription = "avatar_1"
+                                )
+                                Text(
+                                    text = "Отзывы",
+                                    color = colorResource(R.color.gray),
+                                    fontSize = 16.sp,
+                                    lineHeight = 20.sp
+                                )
+
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .padding(
+                                        start = 16.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp
+                                    )
                                     .background(
-                                        brush = Brush.linearGradient(
-                                            colors = listOf(Color(0xFFDF2800), Color(0xFFFF6633)),
-                                            start = Offset.Zero,
-                                            end = Offset.Infinite
-                                        ),
+                                        color = colorResource(R.color.app_background),
                                         shape = RoundedCornerShape(8.dp)
                                     )
-                                    .weight(3f)
                             ) {
-                                Text(
-                                    text = "Добавить отзыв",
-                                    fontSize = 14.sp,
-                                    lineHeight = 20.sp,
-                                    textAlign = TextAlign.Center,
-                                    color = Color.White
-                                )
+                                Column(modifier = Modifier.padding(12.dp)) {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(R.drawable.avatar_image),
+                                            contentDescription = "avatar_1",
+                                            Modifier.size(width = 32.dp, height = 32.dp)
+                                        )
+                                        Column(
+                                            modifier = Modifier
+                                                .padding(
+                                                    start = 8.dp,
+                                                    end = 8.dp
+                                                )
+                                                .fillMaxWidth(0.77f)
+                                        ) {
+                                            Text(
+                                                text = currentReview?.author?.nickName ?: "Анонимный пользователь",
+                                                fontSize = 12.sp,
+                                                lineHeight = 14.4.sp,
+                                                color = Color.White
+                                            )
+                                            Text(
+                                                text = "${currentReview?.createDateTime}",
+                                                fontSize = 12.sp,
+                                                lineHeight = 14.4.sp,
+                                                color = colorResource(R.color.gray_faded)
+                                            )
+                                        }
+                                        Row(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(4.dp))
+                                                .background(colorResource(R.color.marks_nine))
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(R.drawable.review_star_ic),
+                                                contentDescription = null,
+                                                tint = Color.White,
+                                                modifier = Modifier.padding(
+                                                    start = 8.dp,
+                                                    top = 6.dp,
+                                                    bottom = 6.dp,
+                                                    end = 4.dp
+                                                )
+                                            )
+                                            Text(
+                                                text = "${currentReview?.rating}",
+                                                fontSize = 16.sp,
+                                                lineHeight = 20.sp,
+                                                color = Color.White,
+                                                modifier = Modifier
+                                                    .padding(
+                                                        top = 4.dp,
+                                                        bottom = 4.dp,
+                                                        end = 8.dp
+                                                    )
+                                            )
+                                        }
+                                    }
+                                    Text(
+                                        currentReview?.reviewText ?: "",
+                                        fontSize = 14.sp,
+                                        lineHeight = 20.sp,
+                                        color = Color.White,
+                                        modifier = Modifier
+                                            .padding(
+                                                top = 8.dp
+                                            )
+                                    )
+                                }
                             }
-                            IconButton(
-                                onClick = {},
+                            Row(
                                 modifier = Modifier
-                                    .padding(end = 4.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-//                                .background(color = colorResource(R.color.gray_faded))
-
+                                    .padding(
+                                        start = 16.dp,
+                                        end = 16.dp,
+                                        bottom = 16.dp
+                                    )
+                                    .fillMaxWidth()
                             ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.back_ic),
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                            }
-                            IconButton(
-                                onClick = {},
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(color = colorResource(R.color.app_background))
+                                TextButton(
+                                    onClick = {},
+                                    modifier = Modifier
+                                        .padding(end = 24.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(
+                                            brush = Brush.linearGradient(
+                                                colors = listOf(Color(0xFFDF2800), Color(0xFFFF6633)),
+                                                start = Offset.Zero,
+                                                end = Offset.Infinite
+                                            ),
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
+                                        .weight(3f)
+                                ) {
+                                    Text(
+                                        text = "Добавить отзыв",
+                                        fontSize = 14.sp,
+                                        lineHeight = 20.sp,
+                                        textAlign = TextAlign.Center,
+                                        color = Color.White
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {
+                                        if (currentReviewIndex > 0) {
+                                            currentReviewIndex -= 1
+                                        }
+                                    },
+                                    enabled = currentReviewIndex > 0,
+                                    modifier = Modifier
+                                        .padding(end = 4.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(if (currentReviewIndex > 0) colorResource(R.color.app_background) else colorResource(R.color.not_selected_button))
 
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.forward_ic),
-                                    contentDescription = null,
-                                    tint = Color.White,
-                                    modifier = Modifier.padding(8.dp)
-                                )
-                            }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.back_ic),
+                                        contentDescription = null,
+                                        tint = if (currentReviewIndex > 0) Color.White else Color.Gray,
+                                        modifier = Modifier.padding(8.dp)
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {
+                                        if (currentReviewIndex < reviews.size - 1) {
+                                            currentReviewIndex += 1
+                                        }
+                                    },
+                                    enabled = currentReviewIndex < reviews.size - 1,
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(if (currentReviewIndex < reviews.size - 1) colorResource(R.color.app_background) else colorResource(R.color.not_selected_button))
 
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.forward_ic),
+                                        contentDescription = null,
+                                        tint = if (currentReviewIndex < reviews.size - 1) Color.White else Color.Gray,
+                                        modifier = Modifier.padding(8.dp)
+                                    )
+                                }
+
+                            }
                         }
+                    } else {
+                        Text(text = "Нет доступных отзывов.")
                     }
+
                 }
             }
         }

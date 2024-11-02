@@ -1,10 +1,12 @@
 package com.example.kinoteka.data.mapper
 
 import com.example.kinoteka.data.entity.AuthorModel
+import com.example.kinoteka.data.entity.FilmSearchByFiltersResponse
 import com.example.kinoteka.data.entity.LoginCredentials
 import com.example.kinoteka.data.entity.MovieDetailsModel
 import com.example.kinoteka.data.entity.MovieElementModel
 import com.example.kinoteka.data.entity.MoviesListModel
+import com.example.kinoteka.data.entity.PersonByNameResponse
 import com.example.kinoteka.data.entity.ProfileModel
 import com.example.kinoteka.data.entity.ReviewModel
 import com.example.kinoteka.data.entity.UserRegisterDTO
@@ -13,6 +15,7 @@ import com.example.kinoteka.domain.model.Gender
 import com.example.kinoteka.domain.model.LoginCredentialsModel
 import com.example.kinoteka.domain.model.Movie
 import com.example.kinoteka.domain.model.MovieDetails
+import com.example.kinoteka.domain.model.MovieRating
 import com.example.kinoteka.domain.model.ProfileInfo
 import com.example.kinoteka.domain.model.Review
 import com.example.kinoteka.domain.model.UserRegisterModel
@@ -99,6 +102,14 @@ class NetworkMapper {
         )
     }
 
+    fun fromMovieRatingDataToDomain(film: FilmSearchByFiltersResponse): MovieRating {
+        return MovieRating(
+            ratingKinopoisk = film.items[0].ratingKinopoisk.toString(),
+            ratingImdb = film.items[0].ratingImdb.toString(),
+            id = film.items[0].kinopoiskId
+        )
+    }
+
     fun fromProfileModelToData(profileInfo: ProfileInfo): ProfileModel{
         return ProfileModel(
             nickName = profileInfo.nickName,
@@ -107,6 +118,14 @@ class NetworkMapper {
             email = profileInfo.email,
             birthDate = profileInfo.birthDate,
             gender = profileInfo.gender.ordinal
+        )
+    }
+
+    fun fromAuthorInfoToDomain(personByNameResponse: PersonByNameResponse) : Author{
+        return Author(
+            nickName = personByNameResponse.items[0].nameRu,
+            avatar = personByNameResponse.items[0].posterUrl,
+            userId = personByNameResponse.items[0].webUrl
         )
     }
 }

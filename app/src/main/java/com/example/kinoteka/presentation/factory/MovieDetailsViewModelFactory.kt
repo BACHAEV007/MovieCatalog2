@@ -9,7 +9,10 @@ import com.example.kinoteka.data.repository.FavouriteRepositoryImpl
 import com.example.kinoteka.data.repository.MovieRepositoryImpl
 import com.example.kinoteka.domain.usecase.AddMovieToFavoritesUseCase
 import com.example.kinoteka.domain.usecase.DeleteMovieFromFavouritesUseCase
+import com.example.kinoteka.domain.usecase.GetAuthorInfoUseCase
+import com.example.kinoteka.domain.usecase.GetFavouritesUseCase
 import com.example.kinoteka.domain.usecase.GetMovieDetailsUseCase
+import com.example.kinoteka.domain.usecase.GetMovieRatingUseCase
 import com.example.kinoteka.presentation.mapper.MoviesMapper
 import com.example.kinoteka.presentation.viewmodel.MovieDetailsViewModel
 
@@ -25,11 +28,17 @@ class MovieDetailsViewModelFactory (
             val favouriteRepository = FavouriteRepositoryImpl(favoritesApiService, networkMapper)
             val getMoviesDetailsUseCase = GetMovieDetailsUseCase(movieRepository)
             val addMovieToFavoritesUseCase = AddMovieToFavoritesUseCase(favouriteRepository)
+            val getMovieRatingUseCase = GetMovieRatingUseCase(movieRepository)
+            val getAuthorInfoUseCase = GetAuthorInfoUseCase(movieRepository)
+            val getFavouritesUseCase = GetFavouritesUseCase(favouriteRepository)
             val deleteMovieFromFavouritesUseCase = DeleteMovieFromFavouritesUseCase(favouriteRepository)
             return MovieDetailsViewModel(
                 addMovieToFavoritesUseCase,
                 deleteMovieFromFavouritesUseCase,
+                getFavouritesUseCase,
+                getMovieRatingUseCase,
                 getMoviesDetailsUseCase,
+                getAuthorInfoUseCase,
                 contentMapper
             ) as T
         }

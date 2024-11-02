@@ -64,22 +64,23 @@
                 android:id="@+id/movie_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="36dp"
+                app:layout_constraintBottom_toTopOf="@+id/button"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textColor="@color/white"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:textSize="36dp"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/button"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/movie_title"
-                android:layout_marginEnd="8dp">
+                app:layout_constraintTop_toBottomOf="@id/movie_title">
 
                 <TextView
                     android:id="@+id/firstGenre"
@@ -87,12 +88,10 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/genre_background"
                     android:fontFamily="@font/manrope"
-                    android:lineHeight="20dp"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="4dp"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textFontWeight="500"
                     android:textSize="16sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -105,15 +104,12 @@
                     android:layout_marginEnd="4dp"
                     android:background="@drawable/genre_background"
                     android:fontFamily="@font/manrope"
-                    android:lineHeight="20dp"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="4dp"
                     android:textColor="@color/white"
-                    android:textFontWeight="500"
                     android:textSize="16sp"
-
                     app:layout_constraintStart_toEndOf="@id/firstGenre"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
                     android:id="@+id/thirdGenre"
@@ -121,17 +117,14 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/genre_background"
                     android:fontFamily="@font/manrope"
-                    android:lineHeight="20dp"
                     android:paddingHorizontal="12dp"
                     android:paddingVertical="4dp"
                     android:textColor="@color/white"
-                    android:textFontWeight="500"
                     android:textSize="16sp"
                     android:layout_marginTop="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/firstGenre" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 

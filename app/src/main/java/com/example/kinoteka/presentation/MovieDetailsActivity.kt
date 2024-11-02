@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.kinoteka.R
 import com.example.kinoteka.data.datasource.TokenDataSource
@@ -17,12 +18,12 @@ import com.example.kinoteka.presentation.viewmodel.MovieDetailsViewModel
 import com.example.kinoteka.presentation.viewmodel.MoviesViewModel
 
 
+
 class MovieDetailsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_details_screen)
         val movieId = intent.getStringExtra("MOVIE_ID") ?: run {
-            Log.e("MovieDetailsActivity", "Movie ID is null")
             finish()
             return
         }
@@ -30,7 +31,8 @@ class MovieDetailsActivity : ComponentActivity() {
         val viewModel: MovieDetailsViewModel = createViewModel()
         viewModel.loadMovieDetails(movieId)
         composeView.setContent {
-            MoviesDetailsScreen(viewModel)
+            composeView.setBackgroundColor(ContextCompat.getColor(this, R.color.app_background))
+            MoviesDetailsScreen(viewModel, this@MovieDetailsActivity)
         }
     }
 
@@ -47,5 +49,9 @@ class MovieDetailsActivity : ComponentActivity() {
             contentMapper = movieToUIContentMapper
         )
         return ViewModelProvider(this, factory)[MovieDetailsViewModel::class.java]
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 }

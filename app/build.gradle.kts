@@ -53,6 +53,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.material.v190)
     implementation("com.squareup.picasso:picasso:2.8")
     implementation(libs.coil.kt.compose)
     //implementation("com.github.bumptech.glide:glide:4.15.1")

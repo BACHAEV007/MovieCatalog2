@@ -146,7 +146,8 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
         binding?.gridRecycler?.apply {
             layoutManager = gridLayoutManager
             adapter = allMoviesAdapter
-
+//            isNestedScrollingEnabled = false
+//            binding?.gridRecycler?.overScrollMode = View.OVER_SCROLL_NEVER
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -159,12 +160,28 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
                 }
             })
         }
+        binding?.scrollView?.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            if (scrollY > oldScrollY) {
+                val recyclerView = binding?.gridRecycler
+                val gridLayoutManager = recyclerView?.layoutManager as? GridLayoutManager
+
+                val lastVisibleItemPosition = gridLayoutManager?.findLastVisibleItemPosition() ?: 0
+                val totalItemCount = gridLayoutManager?.itemCount ?: 0
+
+                if (lastVisibleItemPosition >= totalItemCount - 5 && !isLoading) {
+                    loadNextPage()
+                }
+            }
+        }
     }
     private fun loadNextPage() {
         if (currentPage <= 5) {
             isLoading = true
             currentPage++
             viewModel.fetchMovies(page = currentPage)
+//            binding?.gridRecycler?.post {
+//                binding?.gridRecycler?.smoothScrollToPosition(allMoviesAdapter.itemCount - 1)
+//            }
         }
     }
     private fun setupRecyclerCarouselView() {
