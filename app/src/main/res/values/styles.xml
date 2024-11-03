@@ -22,4 +22,10 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+    <style name="CustomCardView" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="cardElevation">8dp</item>
+        <item name="cardCornerRadius">16dp</item>
+    </style>
+    <style name="CustomCardStackViewTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    </style>
 </resources>
