@@ -9,6 +9,7 @@ import com.example.kinoteka.data.entity.MoviesListModel
 import com.example.kinoteka.data.entity.PersonByNameResponse
 import com.example.kinoteka.data.entity.ProfileModel
 import com.example.kinoteka.data.entity.ReviewModel
+import com.example.kinoteka.data.entity.ReviewModifyModel
 import com.example.kinoteka.data.entity.UserRegisterDTO
 import com.example.kinoteka.domain.model.Author
 import com.example.kinoteka.domain.model.Gender
@@ -18,6 +19,7 @@ import com.example.kinoteka.domain.model.MovieDetails
 import com.example.kinoteka.domain.model.MovieRating
 import com.example.kinoteka.domain.model.ProfileInfo
 import com.example.kinoteka.domain.model.Review
+import com.example.kinoteka.domain.model.ReviewModify
 import com.example.kinoteka.domain.model.UserRegisterModel
 
 class NetworkMapper {
@@ -126,6 +128,22 @@ class NetworkMapper {
             nickName = personByNameResponse.items[0].nameRu,
             avatar = personByNameResponse.items[0].posterUrl,
             userId = personByNameResponse.items[0].webUrl
+        )
+    }
+
+    fun fromReviewModifyToDomain(reviewModifyModel: ReviewModifyModel) : ReviewModify{
+        return ReviewModify(
+            isAnonymous = reviewModifyModel.isAnonymous,
+            rating = reviewModifyModel.rating,
+            reviewText = reviewModifyModel.reviewText
+        )
+    }
+
+    fun fromReviewModifyToData(reviewModify: ReviewModify) : ReviewModifyModel{
+        return ReviewModifyModel(
+            isAnonymous = reviewModify.isAnonymous,
+            rating = reviewModify.rating,
+            reviewText = reviewModify.reviewText
         )
     }
 }

@@ -13,4 +13,7 @@ object Constants {
     const val ADD_FAVORITE_URL = "favorites/{id}/add"
     const val DELETE_FAVORITE_URL = "favorites/{id}/delete"
     const val ACCOUNT_PROFILE_URL = "account/profile"
+    const val EDIT_REVIEW_URL = "movie/{movieId}/review/{id}/edit"
+    const val ADD_REVIEW_URL = "movie/{movieId}/review/add"
+    const val DELETE_REVIEW_URL = "movie/{movieId}/review/{id}/delete"
 }

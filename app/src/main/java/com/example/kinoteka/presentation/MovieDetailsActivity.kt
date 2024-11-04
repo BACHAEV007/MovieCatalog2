@@ -41,10 +41,12 @@ class MovieDetailsActivity : ComponentActivity() {
         val networkMapper = NetworkMapper()
         val movieApiService = RetrofitApiClient.createMovieApi(tokenDataSource)
         val apiService = RetrofitApiClient.createFavouritesApi(tokenDataSource)
+        val profileService = RetrofitApiClient.createProfileApi(tokenDataSource)
         val movieToUIContentMapper = MoviesMapper()
         val factory = MovieDetailsViewModelFactory(
             favoritesApiService = apiService,
             movieApiService = movieApiService,
+            profileApiService = profileService,
             networkMapper = networkMapper,
             contentMapper = movieToUIContentMapper
         )

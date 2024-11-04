@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.kinoteka"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.kinoteka"
+        targetSdk = 35
         minSdk = 24
-        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -87,5 +87,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.cardstackview)
+    implementation("androidx.compose.material3:material3:1.4.0-alpha02")
     implementation("com.google.android.material:material:1.9.0")
 }
