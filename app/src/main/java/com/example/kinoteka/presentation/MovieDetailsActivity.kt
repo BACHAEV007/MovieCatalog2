@@ -10,6 +10,7 @@ import com.example.kinoteka.data.datasource.TokenDataSource
 import com.example.kinoteka.data.mapper.NetworkMapper
 import com.example.kinoteka.data.network.api.RetrofitApiClient
 import com.example.kinoteka.presentation.factory.MovieDetailsViewModelFactory
+import com.example.kinoteka.presentation.mapper.EntityMapper
 import com.example.kinoteka.presentation.mapper.MoviesMapper
 import com.example.kinoteka.presentation.viewmodel.MovieDetailsViewModel
 
@@ -35,6 +36,7 @@ class MovieDetailsActivity : ComponentActivity() {
     private fun createViewModel(): MovieDetailsViewModel {
         val tokenDataSource = TokenDataSource(this)
         val networkMapper = NetworkMapper()
+        val entityMapper = EntityMapper()
         val movieApiService = RetrofitApiClient.createMovieApi(tokenDataSource)
         val apiService = RetrofitApiClient.createFavouritesApi(tokenDataSource)
         val profileService = RetrofitApiClient.createProfileApi(tokenDataSource)
@@ -44,7 +46,8 @@ class MovieDetailsActivity : ComponentActivity() {
             movieApiService = movieApiService,
             profileApiService = profileService,
             networkMapper = networkMapper,
-            contentMapper = movieToUIContentMapper
+            contentMapper = movieToUIContentMapper,
+            entityMapper
         )
         return ViewModelProvider(this, factory)[MovieDetailsViewModel::class.java]
     }

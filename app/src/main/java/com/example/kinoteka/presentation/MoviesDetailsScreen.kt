@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,6 +68,8 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.kinoteka.domain.model.Author
 import com.example.kinoteka.domain.model.MovieRating
 import com.example.kinoteka.domain.model.Review
+import com.example.kinoteka.presentation.model.FriendContent
+import com.example.kinoteka.presentation.model.GenreContent
 import com.example.kinoteka.presentation.model.MovieDetailsContent
 
 @Composable
@@ -86,6 +89,9 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel, activity: Activity) {
     var userMark by remember { mutableStateOf(0) }
     var showDialog = viewModel.isDialogShown
     var isEditMode by remember { mutableStateOf(false) }
+
+    val friends by viewModel.friendsContent.collectAsState(initial = emptyList())
+    val genres by viewModel.genresContent.collectAsState(initial = emptyList())
 
     fun openDialogWithReviewText(reviewText: String, rating: Int) {
         inputText = reviewText
@@ -143,6 +149,11 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel, activity: Activity) {
                     it,
                     listState,
                     user,
+                    friends,
+                    genres,
+                    onAddFriendClick = { friend ->
+                        viewModel.addFriend(friend)
+                    },
                     onEditReviewClick = { reviewText, rating ->
                     openDialogWithReviewText(reviewText,rating)
                         isEditMode = true
@@ -269,6 +280,9 @@ fun ContentColumn(
     authorAvatar: Author,
     listState: LazyListState,
     user: String?,
+    friends: List<FriendContent>,
+    genres: List<GenreContent>,
+    onAddFriendClick: (FriendContent) -> Unit,
     onEditReviewClick: (String, Int) -> Unit,
     currentReviewIndex: MutableState<Int>
 ) {

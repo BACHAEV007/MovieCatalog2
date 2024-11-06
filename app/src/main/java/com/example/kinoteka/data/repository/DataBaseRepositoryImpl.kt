@@ -1,9 +1,11 @@
 package com.example.kinoteka.data.repository
 
+import com.example.kinoteka.AppContext
 import com.example.kinoteka.data.dao.FriendDao
 import com.example.kinoteka.data.dao.GenreDao
 import com.example.kinoteka.data.dao.MovieDao
 import com.example.kinoteka.data.dao.UserDao
+import com.example.kinoteka.data.database.MovieDataBase
 import com.example.kinoteka.data.mapper.DatabaseMapper
 import com.example.kinoteka.domain.model.Friend
 import com.example.kinoteka.domain.model.GenreDbModel
@@ -14,22 +16,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class DataBaseRepositoryImpl(
-    private val userDao: UserDao,
-    private val movieDao: MovieDao,
-    private val friendDao: FriendDao,
-    private val genreDao: GenreDao,
     private val mapper: DatabaseMapper
 ) : DatabaseRepository {
+    val db = MovieDataBase.getDatabase(AppContext.context)
     override suspend fun addFriend(friend: Friend) {
-        friendDao.addFriend(mapper.mapToEntity(friend))
+        db.FriendDao().addFriend(mapper.mapToEntity(friend))
     }
 
     override suspend fun deleteFriend(friend: Friend) {
-        friendDao.deleteFriend(mapper.mapToEntity(friend))
+        db.FriendDao().deleteFriend(mapper.mapToEntity(friend))
     }
 
     override fun fetchFriends(): Flow<List<Friend>> {
-        return friendDao.fetchFriend()
+        return db.FriendDao().fetchFriend()
             .map { friendEntities ->
                 friendEntities.map { friendEntity ->
                     mapper.mapToDomain(friendEntity)
@@ -38,15 +37,15 @@ class DataBaseRepositoryImpl(
     }
 
     override suspend fun addGenre(genre: GenreDbModel) {
-        genreDao.addGenre(mapper.mapToEntity(genre))
+        db.GenreDao().addGenre(mapper.mapToEntity(genre))
     }
 
     override suspend fun deleteGenre(genre: GenreDbModel) {
-        genreDao.deleteGenre(mapper.mapToEntity(genre))
+        db.GenreDao().deleteGenre(mapper.mapToEntity(genre))
     }
 
     override fun fetchGenres(): Flow<List<GenreDbModel>> {
-        return genreDao.fetchGenre()
+        return db.GenreDao().fetchGenre()
             .map { genreEntities ->
                 genreEntities.map { genreEntity ->
                     mapper.mapToDomain(genreEntity)
@@ -55,15 +54,15 @@ class DataBaseRepositoryImpl(
     }
 
     override suspend fun addMovie(movie: MovieDbModel) {
-        movieDao.addMovie(mapper.mapToEntity(movie))
+        db.MovieDao().addMovie(mapper.mapToEntity(movie))
     }
 
     override suspend fun deleteMovie(movie: MovieDbModel) {
-        movieDao.deleteMovie(mapper.mapToEntity(movie))
+        db.MovieDao().deleteMovie(mapper.mapToEntity(movie))
     }
 
     override fun fetchMovies(): Flow<List<MovieDbModel>> {
-        return movieDao.fetchMovie().map { movieEntities ->
+        return db.MovieDao().fetchMovie().map { movieEntities ->
             movieEntities.map { movieEntity ->
                 mapper.mapToDomain(movieEntity)
             }
@@ -71,15 +70,15 @@ class DataBaseRepositoryImpl(
     }
 
     override suspend fun addUser(user: User) {
-        userDao.addUser(mapper.mapToEntity(user))
+        db.UserDao().addUser(mapper.mapToEntity(user))
     }
 
     override suspend fun deleteUser(user: User) {
-        userDao.deleteUser(mapper.mapToEntity(user))
+        db.UserDao().deleteUser(mapper.mapToEntity(user))
     }
 
     override fun fetchUser(): Flow<User> {
-        return userDao.fetchUser()
+        return db.UserDao().fetchUser()
             .map {
                 user -> mapper.mapToDomain(user)
             }

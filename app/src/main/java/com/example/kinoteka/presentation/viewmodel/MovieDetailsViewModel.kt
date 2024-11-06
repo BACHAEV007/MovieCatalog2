@@ -13,18 +13,28 @@ import com.example.kinoteka.domain.model.Author
 import com.example.kinoteka.domain.model.MovieRating
 import com.example.kinoteka.domain.model.ReviewModify
 import com.example.kinoteka.domain.model.UserRegisterModel
+import com.example.kinoteka.domain.usecase.AddFriendUseCase
+import com.example.kinoteka.domain.usecase.AddGenreUseCase
 import com.example.kinoteka.domain.usecase.AddMovieToFavoritesUseCase
 import com.example.kinoteka.domain.usecase.AddReviewUseCase
+import com.example.kinoteka.domain.usecase.DeleteGenreUseCase
 import com.example.kinoteka.domain.usecase.DeleteMovieFromFavouritesUseCase
 import com.example.kinoteka.domain.usecase.DeleteReviewUseCase
 import com.example.kinoteka.domain.usecase.EditReviewUseCase
+import com.example.kinoteka.domain.usecase.FetchFriendsUseCase
+import com.example.kinoteka.domain.usecase.FetchGenresUseCase
 import com.example.kinoteka.domain.usecase.GetAuthorInfoUseCase
 import com.example.kinoteka.domain.usecase.GetFavouritesUseCase
 import com.example.kinoteka.domain.usecase.GetMovieDetailsUseCase
 import com.example.kinoteka.domain.usecase.GetMovieRatingUseCase
 import com.example.kinoteka.domain.usecase.GetProfileInfoUseCase
+import com.example.kinoteka.presentation.mapper.EntityMapper
 import com.example.kinoteka.presentation.mapper.MoviesMapper
+import com.example.kinoteka.presentation.model.FriendContent
+import com.example.kinoteka.presentation.model.GenreContent
 import com.example.kinoteka.presentation.model.MovieDetailsContent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class MovieDetailsViewModel(
@@ -38,11 +48,27 @@ class MovieDetailsViewModel(
     private val editReviewUseCase : EditReviewUseCase,
     private val deleteReviewUseCase : DeleteReviewUseCase,
     private val getProfileInfoUseCase : GetProfileInfoUseCase,
-    private val contentMapper: MoviesMapper
+    private val contentMapper: MoviesMapper,
+    private val entityMapper: EntityMapper,
+    private val addFriendUseCase: AddFriendUseCase,
+    private val fetchFriendsUseCase: FetchFriendsUseCase,
+    private val addGenreUseCase: AddGenreUseCase,
+    private val deleteGenreUseCase: DeleteGenreUseCase,
+    private val fetchGenresUseCase: FetchGenresUseCase
 ) : ViewModel() {
     private val _movieDetails: MutableState<MovieDetailsContent?> = mutableStateOf(null)
     val movieDetails: State<MovieDetailsContent?>
         get() = _movieDetails
+
+    val friendsContent: Flow<List<FriendContent>> = fetchFriendsUseCase()
+        .map {  friendModelList ->
+            friendModelList.map { entityMapper.mapToContent(it) }
+        }
+
+    val genresContent: Flow<List<GenreContent>> = fetchGenresUseCase()
+        .map { genreDbList ->
+            genreDbList.map { entityMapper.mapToContent(it) }
+        }
 
     var isDialogShown by mutableStateOf(false)
 
@@ -52,6 +78,12 @@ class MovieDetailsViewModel(
 
     fun onDismissDialog(){
         isDialogShown = false
+    }
+
+    fun addFriend(friend: FriendContent) {
+        viewModelScope.launch {
+            addFriendUseCase(entityMapper.mapToDbModel(friend))
+        }
     }
 
     private val _movieRating: MutableState<MovieRating?> = mutableStateOf(null)
@@ -81,7 +113,6 @@ class MovieDetailsViewModel(
             rating = rating,
             isAnonymous = anonymous
         )
-
         viewModelScope.launch {
             addReviewUseCase(movieId, reviewModify)
         }
@@ -93,14 +124,12 @@ class MovieDetailsViewModel(
             rating = rating,
             isAnonymous = anonymous
         )
-
         viewModelScope.launch {
             editReviewUseCase(movieId, id, reviewModify)
         }
     }
 
     fun deleteReview(movieId: String, id: String) {
-
         viewModelScope.launch {
             deleteReviewUseCase(movieId, id)
         }
