@@ -3,6 +3,7 @@ package com.example.kinoteka.domain.model
 import kotlinx.serialization.SerialName
 
 data class ProfileInfo(
+    val id: String = "",
     val nickName: String = "",
     val name: String = "",
     val avatarLink: String? = "",

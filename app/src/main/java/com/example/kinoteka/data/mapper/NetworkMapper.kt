@@ -95,6 +95,7 @@ class NetworkMapper {
 
     fun fromProfileModelToDomain(profileModel: ProfileModel): ProfileInfo{
         return ProfileInfo(
+            id = profileModel.id,
             nickName = profileModel.nickName,
             name = profileModel.name,
             avatarLink = profileModel.avatarLink,

@@ -4,6 +4,7 @@ import android.app.Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -65,12 +67,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.rememberImagePainter
 import com.example.kinoteka.domain.model.Author
 import com.example.kinoteka.domain.model.MovieRating
 import com.example.kinoteka.domain.model.Review
 import com.example.kinoteka.presentation.model.FriendContent
 import com.example.kinoteka.presentation.model.GenreContent
 import com.example.kinoteka.presentation.model.MovieDetailsContent
+import com.example.kinoteka.presentation.model.UserContent
 
 @Composable
 fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel, activity: Activity) {
@@ -157,6 +161,12 @@ fun MoviesDetailsScreen(viewModel: MovieDetailsViewModel, activity: Activity) {
                     onEditReviewClick = { reviewText, rating ->
                     openDialogWithReviewText(reviewText,rating)
                         isEditMode = true
+                    },
+                    onAddGenreClick = { genre ->
+                        viewModel.addGenre(genre)
+                    },
+                    onDeleteGenreClick = { genre ->
+                        viewModel.deleteGenre(genre)
                     },
                     currentReviewIndex = currentReviewIndex
                 )
@@ -279,11 +289,13 @@ fun ContentColumn(
     movieRating: MovieRating?,
     authorAvatar: Author,
     listState: LazyListState,
-    user: String?,
+    user: UserContent?,
     friends: List<FriendContent>,
     genres: List<GenreContent>,
     onAddFriendClick: (FriendContent) -> Unit,
     onEditReviewClick: (String, Int) -> Unit,
+    onAddGenreClick: (GenreContent) -> Unit,
+    onDeleteGenreClick: (GenreContent) -> Unit,
     currentReviewIndex: MutableState<Int>
 ) {
     val reviews = details?.reviews ?: emptyList()
@@ -301,9 +313,12 @@ fun ContentColumn(
             TitleBox(details.name, details.tagline)
             Spacer(modifier = Modifier.height(16.dp))
         }
+
         item {
-            FriendsLikeBox()
-            Spacer(modifier = Modifier.height(16.dp))
+            if(!friends.isEmpty()) {
+                FriendsLikeBox(friends)
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
         item {
             details.description?.let { description ->
@@ -425,21 +440,39 @@ fun ContentColumn(
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        items(details.genres) { genre ->
+                        items(details.genres) { genreItem ->
+                            val isHighlighted = genres.any { it.genreId == genreItem.id }
+
                             Box(
                                 modifier = Modifier
                                     .background(
-                                        color = colorResource(R.color.app_background),
+                                        brush = if (isHighlighted) {
+                                            Brush.linearGradient(
+                                                colors = listOf(Color(0xFFDF2800), Color(0xFFFF6633)),
+                                                start = Offset.Zero,
+                                                end = Offset.Infinite
+                                            )
+                                        } else {
+                                            SolidColor(colorResource(R.color.app_background)) // Используем SolidColor для стандартного цвета
+                                        },
                                         shape = RoundedCornerShape(8.dp)
                                     )
                                     .padding(horizontal = 12.dp, vertical = 8.dp)
+                                    .clickable {
+                                        if (isHighlighted) {
+                                            onDeleteGenreClick(GenreContent(genreId = genreItem.id, userId = user?.userId
+                                                ?: "", name = genreItem.name))
+                                        } else {
+                                            onAddGenreClick(GenreContent(genreId = genreItem.id, userId = user?.userId
+                                                ?: "", name = genreItem.name))
+                                        }
+                                    }
                             ) {
                                 Text(
-                                    text = genre.name,
+                                    text = genreItem.name,
                                     fontSize = 16.sp,
                                     color = Color.White
                                 )
@@ -591,6 +624,19 @@ fun ContentColumn(
                                             painter = painterResource(R.drawable.avatar_image),
                                             contentDescription = "avatar_1",
                                             Modifier.size(width = 32.dp, height = 32.dp)
+                                                .clickable {
+                                                    onAddFriendClick(
+                                                        FriendContent(
+                                                            friendId = currentReview.author?.userId
+                                                                ?: "Unknown",
+                                                            userId = user?.userId ?: "",
+                                                            nickName = currentReview.author?.nickName
+                                                                ?: "Unknown",
+                                                            avatar = currentReview.author?.avatar
+                                                                ?: ""
+                                                        )
+                                                    )
+                                                }
                                         )
                                     }
                                     else {
@@ -599,7 +645,15 @@ fun ContentColumn(
                                             contentDescription = "Avatar",
                                             Modifier
                                                 .size(width = 32.dp, height = 32.dp)
-                                                .clip(CircleShape),
+                                                .clip(CircleShape)
+                                                .clickable {
+                                                onAddFriendClick( FriendContent(
+                                                    friendId = currentReview.author?.userId ?: "Unknown",
+                                                    userId = user?.userId ?: "",
+                                                    nickName = currentReview.author?.nickName ?: "Unknown",
+                                                    avatar = currentReview.author?.avatar ?: ""
+                                                ))
+                                            },
                                             contentScale = ContentScale.Crop
                                         )
                                     }
@@ -682,7 +736,7 @@ fun ContentColumn(
                         ) {
                             TextButton(
                                 onClick = {
-                                    if (details.reviews[currentReviewIndex.value].author?.nickName == user) {
+                                    if (details.reviews[currentReviewIndex.value].author?.nickName == user?.nickName) {
                                         val existingReviewText = details.reviews[currentReviewIndex.value].reviewText
                                         onEditReviewClick(existingReviewText, details.reviews[currentReviewIndex.value].rating)
                                     } else {
@@ -703,7 +757,7 @@ fun ContentColumn(
                                     .weight(3f)
                             ) {
                                 Text(
-                                    text = if (details.reviews[currentReviewIndex.value].author?.nickName == user) {
+                                    text = if (details.reviews[currentReviewIndex.value].author?.nickName == user?.nickName) {
                                         "Изменить отзыв"
                                     } else {
                                         "Добавить отзыв"
@@ -714,7 +768,7 @@ fun ContentColumn(
                                     color = Color.White
                                 )
                             }
-                            if (details.reviews[currentReviewIndex.value].author?.nickName == user){
+                            if (details.reviews[currentReviewIndex.value].author?.nickName == user?.nickName){
                                 IconButton(
                                     onClick = {
                                         viewModel.deleteReview(details.id, details.reviews[currentReviewIndex.value].id)
@@ -837,7 +891,7 @@ fun TitleBox(name: String, tagline: String?) {
 }
 
 @Composable
-fun FriendsLikeBox() {
+fun FriendsLikeBox(friends: List<FriendContent>,) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -851,13 +905,27 @@ fun FriendsLikeBox() {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(R.drawable.avatar_image),
-                contentDescription = "avatar_1"
-            )
+            LazyRow {
+                items(friends.take(3)) { friend ->
+                    Image(
+                        painter = if (friend.avatar.isNullOrEmpty() || friend.avatar == "") {
+                            painterResource(R.drawable.avatar_image)
+                        } else {
+                            rememberImagePainter(friend.avatar)
+                        },
+                        contentDescription = "avatar",
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+            }
+
             Spacer(modifier = Modifier.size(8.dp))
             Text(
-                text = "нравится 3 вашим друзьям",
+                text = "нравится ${friends.size} вашим друзьям",
                 color = Color.White,
                 fontSize = 16.sp
             )

@@ -5,7 +5,10 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinoteka.domain.model.LoginCredentialsModel
+import com.example.kinoteka.domain.model.User
 import com.example.kinoteka.domain.model.ValidationErrorType
+import com.example.kinoteka.domain.usecase.AddUserUseCase
+import com.example.kinoteka.domain.usecase.GetProfileInfoUseCase
 import com.example.kinoteka.domain.usecase.LoginUserUseCase
 import com.example.kinoteka.domain.usecase.ValidateLoginUseCase
 import com.example.kinoteka.domain.usecase.ValidatePasswordUseCase
@@ -20,7 +23,9 @@ import kotlinx.coroutines.launch
 class LoginViewModel(
     private val validateLoginUseCase: ValidateLoginUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val loginUserUseCase: LoginUserUseCase
+    private val loginUserUseCase: LoginUserUseCase,
+    private val addUserUseCase: AddUserUseCase,
+    private val getProfileInfoUseCase: GetProfileInfoUseCase
 ) : ViewModel(){
     private val _loginContent = MutableStateFlow(LoginContent())
     val loginContent: StateFlow<LoginContent> = _loginContent
@@ -77,6 +82,14 @@ class LoginViewModel(
                         password = password
                     )
                 }
+            )
+            val user = getProfileInfoUseCase()
+            addUserUseCase(
+                User(
+                    userId = user.id,
+                    nickName = user.nickName,
+                    avatar = user.avatarLink ?: "",
+                )
             )
         }
     }

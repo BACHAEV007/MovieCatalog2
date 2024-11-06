@@ -33,6 +33,7 @@ import com.example.kinoteka.presentation.mapper.MoviesMapper
 import com.example.kinoteka.presentation.model.FriendContent
 import com.example.kinoteka.presentation.model.GenreContent
 import com.example.kinoteka.presentation.model.MovieDetailsContent
+import com.example.kinoteka.presentation.model.UserContent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -86,12 +87,24 @@ class MovieDetailsViewModel(
         }
     }
 
+    fun deleteGenre(genre: GenreContent) {
+        viewModelScope.launch {
+            deleteGenreUseCase(entityMapper.mapToDbModel(genre))
+        }
+    }
+
+    fun addGenre(genre: GenreContent) {
+        viewModelScope.launch {
+            addGenreUseCase(entityMapper.mapToDbModel(genre))
+        }
+    }
+
     private val _movieRating: MutableState<MovieRating?> = mutableStateOf(null)
     val movieRating: State<MovieRating?>
         get() = _movieRating
 
-    private val _userContent: MutableState<String?> = mutableStateOf(null)
-    val userContent: State<String?>
+    private val _userContent: MutableState<UserContent?> = mutableStateOf(null)
+    val userContent: State<UserContent?>
         get() = _userContent
 
     private val _isFavorite: MutableState<Boolean> = mutableStateOf(false)
@@ -143,12 +156,14 @@ class MovieDetailsViewModel(
                 val director = movieDetailsModel.director.substringBefore(",")
                 val author = getAuthorInfoUseCase(director)
                 val movieRating = getMovieRatingUseCase(movieDetailsModel.name, movieDetailsModel.year)
-                val user = getProfileInfoUseCase().nickName
+                val user = getProfileInfoUseCase()
+                val userContent = user.avatarLink?.let { UserContent(user.id, user.nickName, it) }
+
                 _isFavorite.value = favouriteMovies.any { it.id == movieDetailsModel.id }
                 _movieDetails.value = contentMapper.mapToMovieDetailsContent(movieDetailsModel)
                 _movieRating.value = movieRating
                 _authorContent.value = author
-                _userContent.value = user
+                _userContent.value = userContent
             } catch (e: Exception) {
                 e.printStackTrace()
             }
