@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.androidKapt)
 }
 
 android {
@@ -53,6 +54,10 @@ android {
 }
 
 dependencies {
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+
     implementation(libs.material.v190)
     implementation("com.squareup.picasso:picasso:2.8")
     implementation(libs.coil.kt.compose)

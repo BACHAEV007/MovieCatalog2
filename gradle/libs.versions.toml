@@ -49,7 +49,9 @@ androidx-lifecycle-viewmodel-compose-android = { group = "androidx.lifecycle", n
 coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 android-card-stack-view = { module = "com.github.yuyakaido:CardStackView", version.ref = "cardStackViewVersion" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+androidKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 
