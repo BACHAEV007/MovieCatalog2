@@ -28,4 +28,8 @@
     </style>
     <style name="CustomCardStackViewTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
     </style>
+    <style name="avatar">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
