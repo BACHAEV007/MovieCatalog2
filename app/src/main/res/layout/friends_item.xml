@@ -4,8 +4,7 @@
     android:layout_width="111dp"
     android:layout_height="wrap_content"
     android:layout_marginBottom="16dp"
-    android:layout_marginEnd="16dp"
-    android:background="">
+    android:layout_marginEnd="16dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/friendAvatar"
@@ -15,18 +14,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/avatar" />
+        app:shapeAppearanceOverlay="@style/avatar"
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/friendName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textAppearance="Янгель Юрий"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/friendAvatar" />
+        app:layout_constraintTop_toBottomOf="@+id/friendAvatar"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:fontFamily="@font/manrope_bold" />
 
     <ImageView
         android:id="@+id/deleteButton"

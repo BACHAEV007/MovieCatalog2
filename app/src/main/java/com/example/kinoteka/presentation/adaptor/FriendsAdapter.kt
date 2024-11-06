@@ -9,12 +9,17 @@ import com.example.kinoteka.databinding.FriendsItemBinding
 import com.example.kinoteka.presentation.model.FriendContent
 import com.squareup.picasso.Picasso
 
-class FriendsAdapter : RecyclerView.Adapter<FriendsAdapter.FriendsHolder>(){
+class FriendsAdapter(
+    private val onDeleteFriendClick: (FriendContent) -> Unit
+) : RecyclerView.Adapter<FriendsAdapter.FriendsHolder>(){
     val friendsList = ArrayList<FriendContent>()
     inner class FriendsHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = FriendsItemBinding.bind(view)
         init {
-            //Настраиваем listener
+            binding.deleteButton.setOnClickListener {
+                val friend = friendsList[adapterPosition]
+                onDeleteFriendClick(friend)
+            }
         }
         fun bind(friend: FriendContent) = with(binding){
             val posterUrl = friend.avatar
@@ -39,5 +44,11 @@ class FriendsAdapter : RecyclerView.Adapter<FriendsAdapter.FriendsHolder>(){
 
     override fun getItemCount(): Int {
         return friendsList.size
+    }
+
+    fun updateFriendsList(newFriends: List<FriendContent>) {
+        friendsList.clear()
+        friendsList.addAll(newFriends)
+        notifyDataSetChanged()
     }
 }

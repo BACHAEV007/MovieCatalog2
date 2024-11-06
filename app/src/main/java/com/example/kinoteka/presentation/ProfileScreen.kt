@@ -57,6 +57,12 @@ class ProfileScreen : Fragment(R.layout.profile_screen) {
                 .addToBackStack(null)
                 .commit()
         }
+        binding?.constraintLayout5?.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, FriendsScreen())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
 
