@@ -40,4 +40,7 @@
     <string name="accept">Применить</string>
     <string name="back">Назад</string>
     <string name="my_friends">Мои друзья</string>
+    <string name="Favorites">Избранное</string>
+    <string name="favorite_genres">Любимые жанры</string>
+    <string name="favorites_movies">Любимые фильмы</string>
 </resources>
