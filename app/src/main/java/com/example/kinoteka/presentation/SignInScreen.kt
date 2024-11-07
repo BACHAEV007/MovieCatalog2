@@ -53,9 +53,10 @@ class SignInScreen : Fragment(R.layout.sign_in_screen) {
             }
         }
 
-        binding?.signInButton?.setOnClickListener{
+        binding?.signInButton?.setOnClickListener {
             viewModel.onLogin()
             val intent = Intent(requireContext(), MovieActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
     }

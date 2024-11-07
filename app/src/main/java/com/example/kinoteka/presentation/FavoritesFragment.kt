@@ -64,41 +64,42 @@ import java.util.regex.Pattern
 fun FavoritesScreen(viewModel: FavoritesViewModel, fragment: FavoritesScreenFragment,onMovieClick: (String) -> Unit){
     val genres by viewModel.genresContent.collectAsState(initial = emptyList())
     val favorites by viewModel.favouritesContent.collectAsState(initial = emptyList())
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = colorResource(R.color.app_background))
-                .padding(top = 24.dp, start = 24.dp, end = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(32.dp)
-        ) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = colorResource(R.color.app_background))
+            .padding(top = 24.dp, start = 24.dp, end = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(32.dp)
+    ) {
+        item {
+            Text(
+                text = stringResource(R.string.Favorites),
+                fontSize = 24.sp,
+                color = colorResource(R.color.white),
+                fontFamily = FontFamily(
+                    Font(R.font.manrope_bold, FontWeight.Normal)
+                )
+            )
+        }
+        if (genres.isNotEmpty()) {
             item {
-                Text(
-                    text = stringResource(R.string.Favorites),
-                    fontSize = 24.sp,
-                    color = colorResource(R.color.white),
-                    fontFamily = FontFamily(
-                        Font(R.font.manrope_bold, FontWeight.Normal))
+                FavoritesGenres(
+                    genres = genres,
+                    onDeleteGenreClick = { genre ->
+                        viewModel.deleteGenre(genre)
+                    }
                 )
             }
-            if (genres.isNotEmpty()) {
-                item {
-                    FavoritesGenres(
-                        genres = genres,
-                        onDeleteGenreClick = { genre ->
-                            viewModel.deleteGenre(genre)
-                        }
-                    )
-                }
-            }
-            if (favorites.isNotEmpty()) {
-                item {
-                    FavoriteMovies(favorites, onMovieClick)
-                }
-            }
-            item{
-                Spacer(modifier = Modifier.size(70.dp))
+        }
+        if (favorites.isNotEmpty()) {
+            item {
+                FavoriteMovies(favorites, onMovieClick)
             }
         }
+        item {
+            Spacer(modifier = Modifier.size(70.dp))
+        }
+    }
     if (genres.isEmpty() && favorites.isEmpty()){
         BlankScreen()
     }
@@ -297,6 +298,7 @@ fun BlankScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
+                .clip(shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp))
         ) {
             Image(
                 painter = painterResource(R.drawable.welcome_screen_bg),

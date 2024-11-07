@@ -11,12 +11,17 @@ import com.example.kinoteka.databinding.AllMoviesGridItemBinding
 import com.example.kinoteka.presentation.model.MovieContent
 import com.squareup.picasso.Picasso
 
-class AllMoviesAdapter : RecyclerView.Adapter<AllMoviesAdapter.AllMoviesHolder>(){
+class AllMoviesAdapter(
+    private val onMovieClick: (String) -> Unit
+) : RecyclerView.Adapter<AllMoviesAdapter.AllMoviesHolder>(){
     val moviesList = ArrayList<MovieContent>()
     inner class AllMoviesHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = AllMoviesGridItemBinding.bind(view)
         init {
-            //Настраиваем listener
+            itemView.setOnClickListener {
+                val movieId = moviesList[adapterPosition].id
+                onMovieClick(movieId)
+            }
         }
         fun bind(movie: MovieContent) = with(binding){
             val posterUrl = movie.poster

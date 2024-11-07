@@ -31,9 +31,15 @@ import kotlinx.coroutines.launch
 class MoviesScreen : Fragment(R.layout.movies_screen) {
     private var binding: MoviesScreenBinding? = null
     private lateinit var viewModel: MoviesViewModel
-    private val carouselAdapter = CarouselAdapter()
-    private val allMoviesAdapter = AllMoviesAdapter()
-    private val favouritesAdapter = FavouritesAdapter()
+    private val carouselAdapter = CarouselAdapter { movieId ->
+        onMovieClicked(movieId)
+    }
+    private val allMoviesAdapter = AllMoviesAdapter { movieId ->
+        onMovieClicked(movieId)
+    }
+    private val favouritesAdapter = FavouritesAdapter{ movieId ->
+        onMovieClicked(movieId)
+    }
     private var currentAnimator: ValueAnimator? = null
     private var lastVisiblePosition = -1
     private var currentPage = 1
@@ -56,6 +62,17 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
             }
             startActivity(intent)
         }
+        binding?.allbutton?.setOnClickListener {
+            replaceFragment(FavoritesScreenFragment())
+            (activity as? MovieActivity)?.updateSelectedBottomNavigationItem(R.id.menu_favorites)
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        val fragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container_bottom_nav, fragment)
+        fragmentTransaction.commit()
     }
 
     override fun onDestroyView() {
@@ -105,44 +122,54 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
         }
     }
     private fun setupFavouriteRecyclerView() {
-        val favouriteManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val favouriteManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding?.favouritesRecycler?.apply {
             layoutManager = favouriteManager
             adapter = favouritesAdapter
+
+            post {
+                val firstView = favouriteManager.findViewByPosition(0)
+                firstView?.let {
+                    val cardView = it.findViewById<CardView>(R.id.favourite_card_view)
+                    scaleView(cardView, 1.1f)
+                }
+            }
+
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                private var lastScaledPosition = -1
+
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    val firstVisibleItemPosition = favouriteManager.findFirstVisibleItemPosition()
-                    val lastVisibleItemPosition = favouriteManager.findLastVisibleItemPosition()
 
-                    for (i in firstVisibleItemPosition..lastVisibleItemPosition) {
-                        val view = favouriteManager.findViewByPosition(i) ?: continue
-                        val cardView = view.findViewById<CardView>(R.id.favourite_card_view)
-                        val positionInMiddle = getMiddleItemPosition(favouriteManager, recyclerView, view)
-                        val scale = if (positionInMiddle == i) 1.1f else 1.0f
-                        scaleView(cardView, scale)
+                    val firstCompletelyVisibleItemPosition = favouriteManager.findFirstCompletelyVisibleItemPosition()
+
+                    if (firstCompletelyVisibleItemPosition != lastScaledPosition && firstCompletelyVisibleItemPosition >= 0) {
+                        if (lastScaledPosition >= 0) {
+                            favouriteManager.findViewByPosition(lastScaledPosition)?.let { view ->
+                                val cardView = view.findViewById<CardView>(R.id.favourite_card_view)
+                                scaleView(cardView, 1.0f)
+                            }
+                        }
+
+                        favouriteManager.findViewByPosition(firstCompletelyVisibleItemPosition)?.let { view ->
+                            val cardView = view.findViewById<CardView>(R.id.favourite_card_view)
+                            scaleView(cardView, 1.1f)
+                        }
+
+                        lastScaledPosition = firstCompletelyVisibleItemPosition
                     }
                 }
             })
         }
     }
-    private fun getMiddleItemPosition(
-        layoutManager: LinearLayoutManager,
-        recyclerView: RecyclerView,
-        view: View
-    ): Int {
-        val recyclerCenterX = (recyclerView.width / 2)
-        val viewCenterX = (view.left + view.right) / 2
-        val distanceFromCenter = Math.abs(recyclerCenterX - viewCenterX)
-        return if (distanceFromCenter < recyclerView.width / 4) layoutManager.getPosition(view) else -1
-    }
+
     private fun scaleView(view: View, scale: Float) {
         view.scaleX = scale
         view.scaleY = scale
     }
     private fun setupAllMoviesRecyclerView() {
         val gridLayoutManager = GridLayoutManager(requireContext(), 3)
+
         binding?.gridRecycler?.apply {
             layoutManager = gridLayoutManager
             adapter = allMoviesAdapter
@@ -179,9 +206,6 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
             isLoading = true
             currentPage++
             viewModel.fetchMovies(page = currentPage)
-//            binding?.gridRecycler?.post {
-//                binding?.gridRecycler?.smoothScrollToPosition(allMoviesAdapter.itemCount - 1)
-//            }
         }
     }
     private fun setupRecyclerCarouselView() {
@@ -206,6 +230,13 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
                 }
             })
         }
+    }
+
+    private fun onMovieClicked(movieId: String) {
+        val intent = Intent(requireContext(), MovieDetailsActivity::class.java).apply {
+            putExtra("MOVIE_ID", movieId)
+        }
+        startActivity(intent)
     }
 
     private fun resetProgressBars() {

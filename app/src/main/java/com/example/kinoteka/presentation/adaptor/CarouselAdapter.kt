@@ -9,12 +9,17 @@ import com.example.kinoteka.databinding.MovieItemCarouselBinding
 import com.example.kinoteka.presentation.model.MovieContent
 import com.squareup.picasso.Picasso
 
-class CarouselAdapter : RecyclerView.Adapter<CarouselAdapter.CarouselHolder>() {
+class CarouselAdapter(
+    private val onMovieClick: (String) -> Unit
+) : RecyclerView.Adapter<CarouselAdapter.CarouselHolder>() {
     val moviesList = ArrayList<MovieContent>()
     inner class CarouselHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = MovieItemCarouselBinding.bind(view)
         init {
-            //Настраиваем listener
+            binding.button.setOnClickListener {
+                val movieId = moviesList[adapterPosition].id
+                onMovieClick(movieId)
+            }
         }
         fun bind(movie: MovieContent) = with(binding){
             val posterUrl = movie.poster

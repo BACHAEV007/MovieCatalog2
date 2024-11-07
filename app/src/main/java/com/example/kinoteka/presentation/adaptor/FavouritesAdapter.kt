@@ -9,12 +9,17 @@ import com.example.kinoteka.databinding.FavouriteItemBinding
 import com.example.kinoteka.presentation.model.FavouriteContent
 import com.squareup.picasso.Picasso
 
-class FavouritesAdapter : RecyclerView.Adapter<FavouritesAdapter.FavouritesHolder>(){
+class FavouritesAdapter(
+    private val onMovieClick: (String) -> Unit
+) : RecyclerView.Adapter<FavouritesAdapter.FavouritesHolder>(){
     val moviesList = ArrayList<FavouriteContent>()
     inner class FavouritesHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val binding = FavouriteItemBinding.bind(view)
         init {
-            //Настраиваем listener
+            itemView.setOnClickListener {
+                val movieId = moviesList[adapterPosition].id
+                onMovieClick(movieId)
+            }
         }
         fun bind(movie: FavouriteContent) = with(binding){
             val posterUrl = movie.poster
