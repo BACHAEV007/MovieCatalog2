@@ -17,5 +17,6 @@ data class MovieDetailsContent(
     val reviews: List<Review>,
     val tagline: String,
     val time: String,
-    val year: Int
+    val year: Int,
+    val averageRating: String
 )

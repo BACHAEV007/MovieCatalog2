@@ -74,6 +74,7 @@ import com.example.kinoteka.domain.model.Review
 import com.example.kinoteka.presentation.model.FriendContent
 import com.example.kinoteka.presentation.model.GenreContent
 import com.example.kinoteka.presentation.model.MovieDetailsContent
+import com.example.kinoteka.presentation.model.MovieRatingContent
 import com.example.kinoteka.presentation.model.UserContent
 
 @Composable
@@ -286,7 +287,7 @@ fun HeaderRow(activity: Activity, movieTitle: String, isFavourite: Boolean,
 fun ContentColumn(
     viewModel: MovieDetailsViewModel,
     details: MovieDetailsContent,
-    movieRating: MovieRating?,
+    movieRating: MovieRatingContent?,
     authorAvatar: Author,
     listState: LazyListState,
     user: UserContent?,
@@ -646,7 +647,9 @@ fun ContentColumn(
                                             Modifier
                                                 .size(width = 32.dp, height = 32.dp)
                                                 .clip(CircleShape)
-                                                .clickable {
+                                                .clickable (
+                                                    enabled = !currentReview.isAnonymous,
+                                                ){
                                                 onAddFriendClick( FriendContent(
                                                     friendId = currentReview.author?.userId ?: "Unknown",
                                                     userId = user?.userId ?: "",
@@ -954,7 +957,7 @@ fun DescriptionBox(description: String) {
 }
 
 @Composable
-fun RatingBox(movieRating: MovieRating?) {
+fun RatingBox(movieRating: MovieRatingContent?) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -1006,7 +1009,7 @@ fun RatingBox(movieRating: MovieRating?) {
                         )
                         Spacer(modifier = Modifier.size(8.dp))
                         Text(
-                            text = "9.9",
+                            text = movieRating?.ratingMoviesKatalog.toString(),
                             fontSize = 20.sp,
                             color = Color.White
                         )

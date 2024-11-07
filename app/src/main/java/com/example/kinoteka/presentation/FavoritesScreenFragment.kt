@@ -1,6 +1,7 @@
 package com.example.kinoteka.presentation
 
 import FavoritesScreen
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.compose.ui.platform.ComposeView
@@ -28,7 +29,7 @@ class FavoritesScreenFragment : Fragment(R.layout.favorites_screen) {
         val viewModel: FavoritesViewModel = createViewModel()
         binding?.favoritesCompose?.setContent {
             binding?.favoritesCompose?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.app_background))
-            FavoritesScreen(viewModel, this@FavoritesScreenFragment)
+            FavoritesScreen(viewModel, this@FavoritesScreenFragment, ::onMovieClicked)
         }
     }
 
@@ -39,5 +40,12 @@ class FavoritesScreenFragment : Fragment(R.layout.favorites_screen) {
             favoritesApiService = apiService
         )
         return ViewModelProvider(this, factory)[FavoritesViewModel::class.java]
+    }
+
+    private fun onMovieClicked(movieId: String) {
+        val intent = Intent(requireContext(), MovieDetailsActivity::class.java).apply {
+            putExtra("MOVIE_ID", movieId)
+        }
+        startActivity(intent)
     }
 }

@@ -43,4 +43,7 @@
     <string name="Favorites">Избранное</string>
     <string name="favorite_genres">Любимые жанры</string>
     <string name="favorites_movies">Любимые фильмы</string>
+    <string name="its_empty_now">Здесь пока пусто</string>
+    <string name="add_favorites_genres_and_movies">Добавьте любимые жанры и фильмы, чтобы вернуться к ним позже</string>
+    <string name="find_movie">Найти фильм для себя</string>
 </resources>

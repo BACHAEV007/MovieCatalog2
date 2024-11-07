@@ -33,6 +33,7 @@ import com.example.kinoteka.presentation.mapper.MoviesMapper
 import com.example.kinoteka.presentation.model.FriendContent
 import com.example.kinoteka.presentation.model.GenreContent
 import com.example.kinoteka.presentation.model.MovieDetailsContent
+import com.example.kinoteka.presentation.model.MovieRatingContent
 import com.example.kinoteka.presentation.model.UserContent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -99,8 +100,8 @@ class MovieDetailsViewModel(
         }
     }
 
-    private val _movieRating: MutableState<MovieRating?> = mutableStateOf(null)
-    val movieRating: State<MovieRating?>
+    private val _movieRating: MutableState<MovieRatingContent?> = mutableStateOf(null)
+    val movieRating: State<MovieRatingContent?>
         get() = _movieRating
 
     private val _userContent: MutableState<UserContent?> = mutableStateOf(null)
@@ -152,15 +153,15 @@ class MovieDetailsViewModel(
         viewModelScope.launch {
             try {
                 val favouriteMovies = getFavouritesUseCase()
-                val movieDetailsModel = getMoviesDetailsUseCase(movieId)
+                val movieDetailsModel = contentMapper.mapToMovieDetailsContent(getMoviesDetailsUseCase(movieId))
                 val director = movieDetailsModel.director.substringBefore(",")
                 val author = getAuthorInfoUseCase(director)
-                val movieRating = getMovieRatingUseCase(movieDetailsModel.name, movieDetailsModel.year)
+                val movieRating = contentMapper.mapToContentRating(getMovieRatingUseCase(movieDetailsModel.name, movieDetailsModel.year), movieDetailsModel.averageRating)
                 val user = getProfileInfoUseCase()
                 val userContent = user.avatarLink?.let { UserContent(user.id, user.nickName, it) }
 
                 _isFavorite.value = favouriteMovies.any { it.id == movieDetailsModel.id }
-                _movieDetails.value = contentMapper.mapToMovieDetailsContent(movieDetailsModel)
+                _movieDetails.value = movieDetailsModel
                 _movieRating.value = movieRating
                 _authorContent.value = author
                 _userContent.value = userContent

@@ -3,9 +3,11 @@ package com.example.kinoteka.presentation.mapper
 import com.example.kinoteka.domain.model.Genre
 import com.example.kinoteka.domain.model.Movie
 import com.example.kinoteka.domain.model.MovieDetails
+import com.example.kinoteka.domain.model.MovieRating
 import com.example.kinoteka.presentation.model.FavouriteContent
 import com.example.kinoteka.presentation.model.MovieContent
 import com.example.kinoteka.presentation.model.MovieDetailsContent
+import com.example.kinoteka.presentation.model.MovieRatingContent
 import com.example.kinoteka.utils.DateFormatter
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
@@ -38,12 +40,27 @@ class MoviesMapper {
         )
     }
 
+    fun mapToContentRating(rating: MovieRating, average: String?) : MovieRatingContent{
+        return MovieRatingContent(
+            id = rating.id,
+            ratingImdb = rating.ratingImdb,
+            ratingKinopoisk = rating.ratingKinopoisk,
+            ratingMoviesKatalog = average
+        )
+    }
+
     fun mapToMovieDetailsContent(movieDetails: MovieDetails): MovieDetailsContent {
         val formattedBudget = formatNumberWithSpaces(movieDetails.budget)
         val formattedFees = formatNumberWithSpaces(movieDetails.fees)
         val formattedTime = DateFormatter.formatTime(movieDetails.time)
         val formattedReviews = movieDetails.reviews.map { review ->
             review.copy(createDateTime = DateFormatter.formatDate(review.createDateTime))
+        }
+        val averageRating = if (movieDetails.reviews.isNotEmpty()) {
+            val totalRating = movieDetails.reviews.sumOf { it.rating }
+            (totalRating / movieDetails.reviews.size).toFloat()
+        } else {
+            0.0f
         }
         return MovieDetailsContent(
             ageLimit = movieDetails.ageLimit,
@@ -59,7 +76,8 @@ class MoviesMapper {
             reviews = formattedReviews,
             tagline = movieDetails.tagline,
             time = formattedTime,
-            year = movieDetails.year
+            year = movieDetails.year,
+            averageRating = averageRating.toString()
         )
     }
 
