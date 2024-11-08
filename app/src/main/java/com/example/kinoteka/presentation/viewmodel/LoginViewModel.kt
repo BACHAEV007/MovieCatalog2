@@ -31,15 +31,19 @@ class LoginViewModel(
     val loginContent: StateFlow<LoginContent> = _loginContent
     private val _isFormValid = MutableStateFlow(false)
     val isFormValid: StateFlow<Boolean> = _isFormValid
-
+    init {
+        viewModelScope.launch {
+            _loginContent.collect {
+                validateForm()
+            }
+        }
+    }
     fun onLoginChanged(newLogin: String, context: Context) {
         val validationResult = validateLoginUseCase(newLogin)
         val errorDescription = getErrorDescription(validationResult)
         viewModelScope.launch(Dispatchers.Main) {
             if (validationResult != null) {
                 Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Логин валиден", Toast.LENGTH_SHORT).show()
             }
         }
         _loginContent.update { currentState ->
@@ -48,7 +52,6 @@ class LoginViewModel(
                 loginError = errorDescription
             )
         }
-        validateForm()
     }
 
     fun onPasswordChanged(password: String, context: Context){
@@ -60,10 +63,7 @@ class LoginViewModel(
         )
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "пароль валиден", Toast.LENGTH_SHORT).show()
         }
-        validateForm()
     }
 
     private fun validateForm() {

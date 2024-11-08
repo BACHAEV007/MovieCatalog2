@@ -1,4 +1,4 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.ui.screenview
 
 import android.animation.ValueAnimator
 import android.content.Intent
@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import androidx.cardview.widget.CardView
 import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kinoteka.R
@@ -48,13 +49,24 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = MoviesScreenBinding.bind(view)
+
         setupAllMoviesRecyclerView()
         setupRecyclerCarouselView()
         setupFavouriteRecyclerView()
+        binding?.lottieView?.visibility = View.VISIBLE
+        binding?.lottieView?.repeatCount = ValueAnimator.INFINITE
+        binding?.lottieView?.playAnimation()
         viewModel = createViewModel()
         viewModel.fetchMovies(page = currentPage)
         viewModel.fetchFavourites()
+        viewModel.navigateToSignInScreen.observe(viewLifecycleOwner) { shouldNavigate ->
+            if (shouldNavigate) {
+                navigateToSignInScreen()
+                viewModel.onNavigatedToSignInScreen()
+            }
+        }
         observeMovieContent()
+
         binding?.randomButton?.setOnClickListener {
             val randomMovieId = viewModel.getRandomMovie()
             val intent = Intent(requireContext(), MovieDetailsActivity::class.java).apply {
@@ -66,6 +78,20 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
             replaceFragment(FavoritesScreenFragment())
             (activity as? MovieActivity)?.updateSelectedBottomNavigationItem(R.id.menu_favorites)
         }
+    }
+
+    private fun navigateToSignInScreen() {
+        (activity as? MovieActivity)?.hideBottomNavigation()
+        parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, WelcomeScreen())
+            .addToBackStack("MovieScreen")
+            .commit()
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, SignInScreen())
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -100,6 +126,8 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
                 carouselAdapter.moviesList.clear()
                 carouselAdapter.moviesList.addAll(movieList)
                 carouselAdapter.notifyDataSetChanged()
+                binding?.lottieView?.visibility = View.GONE
+                binding?.lottieView?.cancelAnimation()
             }
         }
 
@@ -109,6 +137,7 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
                 isLoading = false
                 allMoviesAdapter.moviesList.addAll(movieList)
                 allMoviesAdapter.notifyDataSetChanged()
+
             }
         }
 
@@ -173,8 +202,6 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
         binding?.gridRecycler?.apply {
             layoutManager = gridLayoutManager
             adapter = allMoviesAdapter
-//            isNestedScrollingEnabled = false
-//            binding?.gridRecycler?.overScrollMode = View.OVER_SCROLL_NEVER
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
@@ -295,7 +322,6 @@ class MoviesScreen : Fragment(R.layout.movies_screen) {
                 }
             }
         }
-
         currentAnimator?.start()
     }
 

@@ -1,26 +1,22 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.ui.screenview
 
+import android.animation.ValueAnimator
+import android.content.Intent
 import android.graphics.Color
-import android.graphics.LinearGradient
-import android.graphics.Shader
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.kinoteka.R
 import com.example.kinoteka.databinding.FeedScreenBinding
 import com.example.kinoteka.presentation.adaptor.FeedAdapter
 import com.example.kinoteka.presentation.factory.FeedViewModelFactory
-import com.example.kinoteka.presentation.factory.LoginViewModelFactory
 import com.example.kinoteka.presentation.viewmodel.FeedViewModel
-import com.example.kinoteka.presentation.viewmodel.LoginViewModel
-import com.google.android.material.card.MaterialCardView
-import com.squareup.picasso.Picasso
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.Direction
@@ -37,7 +33,16 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
         binding = FeedScreenBinding.bind(view)
         viewModel = createViewModel()
         setupCardStackView()
+        viewModel.navigateToSignInScreen.observe(viewLifecycleOwner) { shouldNavigate ->
+            if (shouldNavigate) {
+                navigateToSignInScreen()
+                viewModel.onNavigatedToSignInScreen()
+            }
+        }
 
+        binding?.lottieView?.visibility = View.VISIBLE
+        binding?.lottieView?.repeatCount = ValueAnimator.INFINITE
+        binding?.lottieView?.playAnimation()
 
         viewModel.loadNewMovies()
         observeMovieContent()
@@ -46,7 +51,29 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
 
     private fun createViewModel(): FeedViewModel {
         val factory = FeedViewModelFactory(requireContext())
-        return ViewModelProvider(this, factory)[FeedViewModel::class.java]
+        val viewModel = ViewModelProvider(this, factory)[FeedViewModel::class.java]
+        return viewModel
+    }
+
+    private fun onMovieClicked(movieId: String) {
+        val intent = Intent(requireContext(), MovieDetailsActivity::class.java).apply {
+            putExtra("MOVIE_ID", movieId)
+        }
+        startActivity(intent)
+    }
+
+    private fun navigateToSignInScreen() {
+        (activity as? MovieActivity)?.hideBottomNavigation()
+        parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, WelcomeScreen())
+            .addToBackStack("MovieScreen")
+            .commit()
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, SignInScreen())
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun observeMovieContent() {
@@ -64,7 +91,8 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
                         firstGenre.visibility = if (genres.size == 1) View.VISIBLE else View.GONE
                         secondGenre.visibility = if (genres.size > 1) View.VISIBLE else View.GONE
                         thirdGenre.visibility = if (genres.size > 2) View.VISIBLE else View.GONE
-
+                        lottieView.visibility = View.GONE
+                        lottieView.cancelAnimation()
                         val constraintSet = ConstraintSet()
                         constraintSet.clone(genreContainer)
                         if (genres.size == 1) {
@@ -93,8 +121,8 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
                     }
                 } else {
                     binding?.apply {
-                        movieTitleTextView.text = "Название"
-                        countryYearTextView.text = "Страна • Год"
+                        movieTitleTextView.text = getString(R.string.name_movie)
+                        countryYearTextView.text = getString(R.string.countre_year)
                         firstGenre.visibility = View.GONE
                         secondGenre.visibility = View.GONE
                         thirdGenre.visibility = View.GONE
@@ -160,7 +188,9 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
             }
         })
 
-        cardStackAdapter = FeedAdapter(requireContext(), emptyList())
+        cardStackAdapter  = FeedAdapter(requireContext(), emptyList()) { movieId ->
+            onMovieClicked(movieId)
+        }
         binding?.cardImageView?.layoutManager = cardStackLayoutManager
         binding?.cardImageView?.adapter = cardStackAdapter
     }

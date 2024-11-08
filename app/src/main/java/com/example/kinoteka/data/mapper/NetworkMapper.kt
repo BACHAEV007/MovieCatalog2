@@ -132,14 +132,6 @@ class NetworkMapper {
         )
     }
 
-    fun fromReviewModifyToDomain(reviewModifyModel: ReviewModifyModel) : ReviewModify{
-        return ReviewModify(
-            isAnonymous = reviewModifyModel.isAnonymous,
-            rating = reviewModifyModel.rating,
-            reviewText = reviewModifyModel.reviewText
-        )
-    }
-
     fun fromReviewModifyToData(reviewModify: ReviewModify) : ReviewModifyModel{
         return ReviewModifyModel(
             isAnonymous = reviewModify.isAnonymous,

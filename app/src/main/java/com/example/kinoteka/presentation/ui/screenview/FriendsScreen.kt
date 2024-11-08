@@ -1,4 +1,4 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.ui.screenview
 
 import android.os.Bundle
 import android.view.View
@@ -10,7 +10,6 @@ import com.example.kinoteka.R
 import com.example.kinoteka.databinding.FriendsSceenBinding
 import com.example.kinoteka.presentation.adaptor.FriendsAdapter
 import com.example.kinoteka.presentation.factory.FriendsViewModelFactory
-import com.example.kinoteka.presentation.model.FriendContent
 import com.example.kinoteka.presentation.viewmodel.FriendsViewModel
 
 class FriendsScreen : Fragment(R.layout.friends_sceen) {

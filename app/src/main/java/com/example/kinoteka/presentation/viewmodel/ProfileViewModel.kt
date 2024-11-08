@@ -1,6 +1,8 @@
 package com.example.kinoteka.presentation.viewmodel
 
 import android.util.Patterns
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinoteka.domain.usecase.GetProfileInfoUseCase
@@ -12,6 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 
 class ProfileViewModel(
     private val updateAvatarUseCase: UpdateAvatarUseCase,
@@ -21,13 +25,31 @@ class ProfileViewModel(
 ) : ViewModel(){
     private val _profileContent = MutableStateFlow(ProfileContent())
     val profileContent: StateFlow<ProfileContent> = _profileContent
+    private val _navigateToSignInScreen = MutableLiveData<Boolean>()
+    val navigateToSignInScreen: LiveData<Boolean> get() = _navigateToSignInScreen
+    fun onLogout() {
+        _navigateToSignInScreen.value = true
+    }
 
+    fun onNavigatedToSignInScreen() {
+        _navigateToSignInScreen.value = false
+    }
     fun fetchProfileInfo() {
         viewModelScope.launch(Dispatchers.IO) {
-            val profile = getProfileInfoUseCase()
-            val uiContent = profileMapper.mapToProfileUI(profile)
-            _profileContent.value = uiContent
+            try {
+                val profile = getProfileInfoUseCase()
+                val uiContent = profileMapper.mapToProfileUI(profile)
+                _profileContent.value = uiContent
+            }
+            catch (e: Exception) {
+                if (e is HttpException && e.code() == 401) {
+                    withContext(Dispatchers.Main) {
+                        onLogout()
+                    }
+                }
+            }
         }
+
     }
 
     fun updateAvatar(avatarLink: String?){
@@ -49,8 +71,8 @@ class ProfileViewModel(
         }
     }
 
-    fun logout(){
-        viewModelScope.launch(Dispatchers.IO) {
+    fun logout() {
+        viewModelScope.launch {
             logoutUseCase()
         }
     }

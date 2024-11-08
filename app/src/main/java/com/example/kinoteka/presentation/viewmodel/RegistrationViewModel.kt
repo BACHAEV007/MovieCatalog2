@@ -65,7 +65,7 @@ class RegistrationViewModel(
         }
     }
 
-    private fun validateForm(context: Context ?= null) {
+    private fun validateForm() {
         _isFormValid.value = _registrationContent.value.name.isNotEmpty() &&
                 _registrationContent.value.login.isNotEmpty() &&
                 _registrationContent.value.email.isNotEmpty() &&
@@ -84,8 +84,6 @@ class RegistrationViewModel(
         val errorDescription = getErrorDescription(validationResult)
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Логин валиден", Toast.LENGTH_SHORT).show()
         }
         _registrationContent.update { currentState ->
             currentState.copy(
@@ -93,7 +91,7 @@ class RegistrationViewModel(
                 loginError = errorDescription
             )
         }
-        validateForm(context)
+        validateForm()
     }
 
     fun onEmailChanged(email: String, context: Context) {
@@ -105,10 +103,8 @@ class RegistrationViewModel(
         )
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "email валиден ${email}", Toast.LENGTH_SHORT).show()
         }
-        validateForm(context)
+        validateForm()
     }
 
     fun onNameChanged(name: String, context: Context) {
@@ -120,10 +116,8 @@ class RegistrationViewModel(
         )
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "name валиден ${name}", Toast.LENGTH_SHORT).show()
         }
-        validateForm(context)
+        validateForm()
     }
 
     fun onPasswordChanged(password: String, context: Context){
@@ -135,10 +129,8 @@ class RegistrationViewModel(
         )
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "пароль валиден", Toast.LENGTH_SHORT).show()
         }
-        validateForm(context)
+        validateForm()
     }
 
     fun onRepeatPasswordChanged(confirmPassword: String, context: Context){
@@ -151,10 +143,8 @@ class RegistrationViewModel(
         )
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "пароли совпадают", Toast.LENGTH_SHORT).show()
         }
-        validateForm(context)
+        validateForm()
     }
 
     fun onDateChange(year: Int, month: Int, day: Int) {

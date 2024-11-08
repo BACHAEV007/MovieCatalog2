@@ -1,4 +1,4 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.ui.screenview
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.kinoteka.R
 import com.example.kinoteka.databinding.SignInScreenBinding
 import com.example.kinoteka.presentation.factory.LoginViewModelFactory
-import com.example.kinoteka.presentation.factory.RegistrationViewModelFactory
 import com.example.kinoteka.presentation.viewmodel.LoginViewModel
-import com.example.kinoteka.presentation.viewmodel.RegistrationViewModel
 import kotlinx.coroutines.launch
 
 class SignInScreen : Fragment(R.layout.sign_in_screen) {

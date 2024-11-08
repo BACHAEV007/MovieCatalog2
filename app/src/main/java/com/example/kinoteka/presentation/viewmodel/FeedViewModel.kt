@@ -1,5 +1,7 @@
 package com.example.kinoteka.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinoteka.domain.usecase.GetMoviesUseCase
@@ -9,6 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 
 class FeedViewModel(
     private val getMoviesUseCase: GetMoviesUseCase,
@@ -18,16 +22,35 @@ class FeedViewModel(
     val movieContent: StateFlow<List<MovieContent>> = _movieContent
     private val _allMovies = mutableListOf<MovieContent>()
     private var currentPage = 0
+    private val _navigateToSignInScreen = MutableLiveData<Boolean>()
+    val navigateToSignInScreen: LiveData<Boolean> get() = _navigateToSignInScreen
+
+    fun onLogout() {
+        _navigateToSignInScreen.value = true
+    }
+
+    fun onNavigatedToSignInScreen() {
+        _navigateToSignInScreen.value = false
+    }
 
     fun fetchMovies(page: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            val movies = getMoviesUseCase(page)
-            val uiContent = movieToUIContentMapper.mapMoviesToContentList(movies)
-            _allMovies.clear()
-            _allMovies.addAll(uiContent)
-            getRandomMovies()
+            try {
+                val movies = getMoviesUseCase(page)
+                val uiContent = movieToUIContentMapper.mapMoviesToContentList(movies)
+                _allMovies.clear()
+                _allMovies.addAll(uiContent)
+                getRandomMovies()
+            } catch (e: Exception) {
+                if (e is HttpException && e.code() == 401) {
+                    withContext(Dispatchers.Main) {
+                        onLogout()
+                    }
+                }
+            }
         }
     }
+
 
     fun getRandomMovies() {
         val remainingMovies = _allMovies

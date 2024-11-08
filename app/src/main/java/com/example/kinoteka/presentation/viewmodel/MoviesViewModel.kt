@@ -1,5 +1,7 @@
 package com.example.kinoteka.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinoteka.domain.usecase.AddMovieToFavoritesUseCase
@@ -8,11 +10,13 @@ import com.example.kinoteka.domain.usecase.GetMoviesUseCase
 import com.example.kinoteka.presentation.mapper.MoviesMapper
 import com.example.kinoteka.presentation.model.FavouriteContent
 import com.example.kinoteka.presentation.model.MovieContent
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 
 class MoviesViewModel(
     private val addMovieToFavoritesUseCase: AddMovieToFavoritesUseCase,
@@ -31,8 +35,25 @@ class MoviesViewModel(
 
     private val _allMovies = mutableListOf<MovieContent>()
 
+    private val _navigateToSignInScreen = MutableLiveData<Boolean>()
+    val navigateToSignInScreen: LiveData<Boolean> get() = _navigateToSignInScreen
+
+    fun onLogout() {
+        _navigateToSignInScreen.value = true
+    }
+
+    fun onNavigatedToSignInScreen() {
+        _navigateToSignInScreen.value = false
+    }
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        if (exception is HttpException && exception.code() == 401) {
+            viewModelScope.launch(Dispatchers.Main) {
+                onLogout()
+            }
+        }
+    }
     fun fetchMovies(page: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             val movies = getMoviesUseCase(page)
             val uiContent = movieToUIContentMapper.mapMoviesToContentList(movies)
             _allMovies.addAll(uiContent)
@@ -48,7 +69,7 @@ class MoviesViewModel(
     }
 
     fun fetchFavourites(){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
             val movies = getFavouritesUseCase()
             val uiContent = movieToUIContentMapper.mapFavouritesToContentList(movies)
             _favouritesContent.value = (uiContent)

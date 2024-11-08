@@ -1,5 +1,6 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.ui.screenview
 
+import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
@@ -29,9 +30,19 @@ class ProfileScreen : Fragment(R.layout.profile_screen) {
         super.onViewCreated(view, savedInstanceState)
         binding = ProfileScreenBinding.bind(view)
         viewModel = createViewModel()
+        binding?.lottieView?.visibility = View.VISIBLE
+        binding?.lottieView?.repeatCount = ValueAnimator.INFINITE
+        binding?.lottieView?.playAnimation()
         viewModel.fetchProfileInfo()
         binding?.avatar?.setOnClickListener {
             openAvatarDialog()
+        }
+        viewModel.navigateToSignInScreen.observe(viewLifecycleOwner) { shouldNavigate ->
+            if (shouldNavigate) {
+                viewModel.logout()
+                navigateToSignInScreen()
+                viewModel.onNavigatedToSignInScreen()
+            }
         }
         lifecycleScope.launch {
             viewModel.profileContent.collect { profile ->
@@ -42,6 +53,8 @@ class ProfileScreen : Fragment(R.layout.profile_screen) {
                     profile.avatarLink?.takeIf { it.isNotEmpty() }?.let { link ->
                         Picasso.get().load(link).into(this!!.avatar)
                     }
+                    binding?.lottieView?.visibility = View.GONE
+                    binding?.lottieView?.cancelAnimation()
                     profile.name.let { this!!.nameEditText.setText(it) }
                     profile.name.let { this!!.greetingName.text = it }
                     profile.nickName.let { this!!.loginEditText.setText(it) }
@@ -53,16 +66,7 @@ class ProfileScreen : Fragment(R.layout.profile_screen) {
         binding!!.greetingText.text = getGreetingMessage()
         binding!!.logout.setOnClickListener {
             viewModel.logout()
-            // Очистка всего BackStack
-            parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-
-            // Скрываем BottomNavigationView
-            (activity as? MovieActivity)?.hideBottomNavigation()
-
-            // Переход на SignInScreen
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container_bottom_nav, SignInScreen())
-                .commit()
+            navigateToSignInScreen()
         }
         binding?.constraintLayout5?.setOnClickListener {
             parentFragmentManager.beginTransaction()
@@ -71,6 +75,21 @@ class ProfileScreen : Fragment(R.layout.profile_screen) {
                 .commit()
         }
     }
+
+    private fun navigateToSignInScreen() {
+        (activity as? MovieActivity)?.hideBottomNavigation()
+        parentFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, WelcomeScreen())
+            .addToBackStack("MovieScreen")
+            .commit()
+
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, SignInScreen())
+            .addToBackStack(null)
+            .commit()
+    }
+
 
 
 

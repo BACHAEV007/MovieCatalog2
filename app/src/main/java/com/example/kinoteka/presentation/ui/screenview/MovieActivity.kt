@@ -1,4 +1,4 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.ui.screenview
 
 import android.os.Bundle
 import android.view.View

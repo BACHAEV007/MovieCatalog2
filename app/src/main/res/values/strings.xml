@@ -46,4 +46,20 @@
     <string name="its_empty_now">Здесь пока пусто</string>
     <string name="add_favorites_genres_and_movies">Добавьте любимые жанры и фильмы, чтобы вернуться к ним позже</string>
     <string name="find_movie">Найти фильм для себя</string>
+    <string name="information">Информация</string>
+    <string name="countries">Страны</string>
+    <string name="age">Возраст</string>
+    <string name="time">Время</string>
+    <string name="year">Год выхода</string>
+    <string name="director">Режиссёр</string>
+    <string name="genres">Жанры</string>
+    <string name="money">Финансы</string>
+    <string name="budget">Бюджет</string>
+    <string name="money_in_world">Сборы в мире</string>
+    <string name="reviews">Отзывы</string>
+    <string name="anonimus">Анонимный пользователь</string>
+    <string name="edit_review">Изменить отзыв</string>
+    <string name="add_review">Добавить отзыв</string>
+    <string name="name_movie">Название</string>
+    <string name="countre_year">Страна • Год</string>
 </resources>

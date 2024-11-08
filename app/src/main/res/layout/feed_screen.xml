@@ -6,6 +6,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/app_background">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cardImageView"
+        app:lottie_fileName="download_anim.json">
+
+    </com.airbnb.lottie.LottieAnimationView>
     <ImageView
         android:id="@+id/logoImageView"
         android:layout_width="wrap_content"
@@ -14,14 +25,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="24dp"
+        app:lottie_loop="true"/>
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/cardImageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="56dp"
         android:layout_marginTop="24dp"
+        android:layout_marginBottom="56dp"
         android:theme="@style/CustomCardStackViewTheme"
         app:layout_constraintBottom_toBottomOf="@+id/movieTitleTextView"
         app:layout_constraintTop_toBottomOf="@+id/logoImageView"
@@ -75,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/genre_background"
-            android:fontFamily="@font/manrope"
+            android:fontFamily="@font/manrope_medium"
             android:lineHeight="20dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
@@ -94,7 +106,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:background="@drawable/genre_background"
-            android:fontFamily="@font/manrope"
+            android:fontFamily="@font/manrope_medium"
             android:lineHeight="20dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
@@ -111,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/genre_background"
-            android:fontFamily="@font/manrope"
+            android:fontFamily="@font/manrope_medium"
             android:lineHeight="20dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"

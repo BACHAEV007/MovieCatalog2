@@ -1,5 +1,6 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.ui.screenview
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.ComposeView
@@ -9,6 +10,7 @@ import com.example.kinoteka.R
 import com.example.kinoteka.data.datasource.TokenDataSource
 import com.example.kinoteka.data.mapper.NetworkMapper
 import com.example.kinoteka.data.network.api.RetrofitApiClient
+import com.example.kinoteka.presentation.ui.screencompose.moviedetails.MoviesDetailsScreen
 import com.example.kinoteka.presentation.factory.MovieDetailsViewModelFactory
 import com.example.kinoteka.presentation.mapper.EntityMapper
 import com.example.kinoteka.presentation.mapper.MoviesMapper
@@ -26,13 +28,23 @@ class MovieDetailsActivity : ComponentActivity() {
         }
         val composeView = findViewById<ComposeView>(R.id.movie_details_compose)
         val viewModel: MovieDetailsViewModel = createViewModel()
+        viewModel.navigateToSignInScreen.observe(this) { shouldNavigate ->
+            if (shouldNavigate) {
+                navigateToSignInScreen()
+                viewModel.onNavigatedToSignInScreen()
+            }
+        }
         viewModel.loadMovieDetails(movieId)
         composeView.setContent {
             composeView.setBackgroundColor(ContextCompat.getColor(this, R.color.app_background))
             MoviesDetailsScreen(viewModel, this@MovieDetailsActivity)
         }
     }
-
+    private fun navigateToSignInScreen() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
     private fun createViewModel(): MovieDetailsViewModel {
         val tokenDataSource = TokenDataSource(this)
         val networkMapper = NetworkMapper()

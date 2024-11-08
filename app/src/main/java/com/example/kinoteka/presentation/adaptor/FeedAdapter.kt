@@ -8,8 +8,15 @@ import com.bumptech.glide.Glide
 import com.example.kinoteka.databinding.FeedItemBinding
 import com.example.kinoteka.presentation.model.MovieContent
 
-class FeedAdapter (val context : Context, var list : List<MovieContent>) : RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {
-    inner class FeedViewHolder(val binding : FeedItemBinding) : RecyclerView.ViewHolder(binding.root)
+class FeedAdapter (val context : Context, var list : List<MovieContent>, private val onMovieClick: (String) -> Unit) : RecyclerView.Adapter<FeedAdapter.FeedViewHolder>() {
+    inner class FeedViewHolder(val binding : FeedItemBinding) : RecyclerView.ViewHolder(binding.root){
+        init {
+            binding.posterImageView.setOnClickListener {
+                val movieId = list[adapterPosition].id
+                onMovieClick(movieId)
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedViewHolder {
 

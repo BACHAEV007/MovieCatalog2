@@ -7,6 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.kinoteka.domain.model.Author
@@ -35,9 +37,12 @@ import com.example.kinoteka.presentation.model.GenreContent
 import com.example.kinoteka.presentation.model.MovieDetailsContent
 import com.example.kinoteka.presentation.model.MovieRatingContent
 import com.example.kinoteka.presentation.model.UserContent
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class MovieDetailsViewModel(
     private val addMovieToFavoritesUseCase: AddMovieToFavoritesUseCase,
@@ -66,7 +71,8 @@ class MovieDetailsViewModel(
         .map {  friendModelList ->
             friendModelList.map { entityMapper.mapToContent(it) }
         }
-
+    private val _isLoading: MutableState<Boolean> = mutableStateOf(true)
+    val isLoading: State<Boolean> get() = _isLoading
     val genresContent: Flow<List<GenreContent>> = fetchGenresUseCase()
         .map { genreDbList ->
             genreDbList.map { entityMapper.mapToContent(it) }
@@ -119,7 +125,24 @@ class MovieDetailsViewModel(
     private val _reviewContent: MutableState<ReviewModify?> = mutableStateOf(null)
     val reviewContent: State<ReviewModify?>
         get() = _reviewContent
+    private val _navigateToSignInScreen = MutableLiveData<Boolean>()
+    val navigateToSignInScreen: LiveData<Boolean> get() = _navigateToSignInScreen
 
+    fun onLogout() {
+        _navigateToSignInScreen.value = true
+    }
+
+    fun onNavigatedToSignInScreen() {
+        _navigateToSignInScreen.value = false
+    }
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        if (exception is HttpException && exception.code() == 401) {
+            viewModelScope.launch(Dispatchers.Main) {
+                onLogout()
+            }
+        }
+    }
 
     fun submitReview(movieId: String, reviewText: String, rating: Int, anonymous: Boolean) {
         val reviewModify = ReviewModify(
@@ -127,7 +150,7 @@ class MovieDetailsViewModel(
             rating = rating,
             isAnonymous = anonymous
         )
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             addReviewUseCase(movieId, reviewModify)
         }
     }
@@ -138,19 +161,20 @@ class MovieDetailsViewModel(
             rating = rating,
             isAnonymous = anonymous
         )
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             editReviewUseCase(movieId, id, reviewModify)
         }
     }
 
     fun deleteReview(movieId: String, id: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             deleteReviewUseCase(movieId, id)
         }
     }
 
     fun loadMovieDetails(movieId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
+            _isLoading.value = true
             try {
                 val favouriteMovies = getFavouritesUseCase()
                 val movieDetailsModel = contentMapper.mapToMovieDetailsContent(getMoviesDetailsUseCase(movieId))
@@ -165,31 +189,23 @@ class MovieDetailsViewModel(
                 _movieRating.value = movieRating
                 _authorContent.value = author
                 _userContent.value = userContent
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
     fun addToFavorites(movieId: String) {
-        viewModelScope.launch {
-            try {
-                addMovieToFavoritesUseCase(movieId)
-                _isFavorite.value = true
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        viewModelScope.launch(exceptionHandler) {
+            addMovieToFavoritesUseCase(movieId)
+            _isFavorite.value = true
         }
     }
 
     fun removeFromFavorites(movieId: String) {
-        viewModelScope.launch {
-            try {
-                deleteMovieFromFavouritesUseCase(movieId)
-                _isFavorite.value = false
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+        viewModelScope.launch(exceptionHandler) {
+            deleteMovieFromFavouritesUseCase(movieId)
+            _isFavorite.value = false
         }
     }
 }

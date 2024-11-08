@@ -1,6 +1,7 @@
-package com.example.kinoteka.presentation
+package com.example.kinoteka.presentation.ui.screenview
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -68,6 +69,9 @@ class SignUpScreen() : Fragment(R.layout.sign_up_screen) {
         binding?.birthdayCalendar?.setOnClickListener {
             showDatePicker()
         }
+        binding?.birthdayEditText?.setOnClickListener {
+            showDatePicker()
+        }
         binding?.maleButton?.setOnClickListener {
             binding?.maleButton?.isSelected = true
             binding?.femaleButton?.isSelected = false
@@ -76,6 +80,9 @@ class SignUpScreen() : Fragment(R.layout.sign_up_screen) {
 
         binding?.signUpButton?.setOnClickListener{
             viewModel.onRegister()
+            val intent = Intent(requireContext(), MovieActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
 
         binding?.femaleButton?.setOnClickListener {

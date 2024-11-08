@@ -21,6 +21,7 @@ class FavouritesAdapter(
                 onMovieClick(movieId)
             }
         }
+
         fun bind(movie: FavouriteContent) = with(binding){
             val posterUrl = movie.poster
             if (!posterUrl.isNullOrEmpty()) {

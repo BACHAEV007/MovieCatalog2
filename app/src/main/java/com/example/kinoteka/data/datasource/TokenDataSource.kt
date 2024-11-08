@@ -2,6 +2,7 @@ package com.example.kinoteka.data.datasource
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.kinoteka.constants.Constants.SHARED_PREFERENCES_NAME
 import com.example.kinoteka.constants.Constants.TOKEN
 

@@ -55,9 +55,12 @@ android {
 
 dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation(libs.androidx.core)
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
+    implementation("androidx.core:core-ktx:1.10.1")
     kapt("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-
+    implementation("com.airbnb.android:lottie:6.1.0")
     implementation(libs.material.v190)
     implementation("com.squareup.picasso:picasso:2.8")
     implementation(libs.coil.kt.compose)
