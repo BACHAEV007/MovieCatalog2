@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.kinoteka.domain.usecase.AddMovieToFavoritesUseCase
 import com.example.kinoteka.domain.usecase.GetMoviesUseCase
 import com.example.kinoteka.presentation.mapper.MoviesMapper
 import com.example.kinoteka.presentation.model.MovieContent
@@ -16,7 +17,8 @@ import retrofit2.HttpException
 
 class FeedViewModel(
     private val getMoviesUseCase: GetMoviesUseCase,
-    private val movieToUIContentMapper: MoviesMapper
+    private val movieToUIContentMapper: MoviesMapper,
+    private val addMovieToFavoritesUseCase: AddMovieToFavoritesUseCase
 ) : ViewModel() {
     private val _movieContent = MutableStateFlow<List<MovieContent>>(emptyList())
     val movieContent: StateFlow<List<MovieContent>> = _movieContent
@@ -47,6 +49,18 @@ class FeedViewModel(
                         onLogout()
                     }
                 }
+            }
+        }
+    }
+
+    fun addToFavorites(movieId: String) {
+        viewModelScope.launch {
+            try {
+                addMovieToFavoritesUseCase(movieId)
+            } catch (e: HttpException) {
+                if (e.code() == 400) {
+                }
+            } catch (e: Exception) {
             }
         }
     }

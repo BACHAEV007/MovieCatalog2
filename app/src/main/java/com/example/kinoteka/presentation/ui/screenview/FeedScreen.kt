@@ -152,6 +152,7 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
 
                 val poster = cardView?.findViewById<ImageView>(R.id.posterImageView)
                 val icon = cardView?.findViewById<ImageView>(R.id.icon)
+                val movieId = viewModel.movieContent.value.getOrNull(currPosition)?.id ?: ""
 
                 when (direction) {
                     Direction.Left -> {
@@ -163,6 +164,7 @@ class FeedScreen : Fragment(R.layout.feed_screen) {
                             GradientDrawable.Orientation.LEFT_RIGHT,
                             intArrayOf(Color.argb(alpha, 223, 40, 0), Color.argb(alpha, 255, 102, 51))
                         )
+                        viewModel.addToFavorites(movieId)
                         poster?.foreground = gradientDrawable
                         icon?.setImageResource(R.drawable.liked_feed)
                     }
