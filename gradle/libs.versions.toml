@@ -1,5 +1,6 @@
 [versions]
 agp = "8.6.0"
+cardstackview = "v2.3.4"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -14,11 +15,17 @@ fragment = "1.8.4"
 appcompat = "1.7.0"
 lifecycleViewmodelKtx = "2.8.6"
 material = "1.12.0"
+lifecycleViewmodelComposeAndroid = "2.8.6"
+coil = "2.7.0"
+materialVersion = "1.9.0"
+cardStackViewVersion = "2.3.4"
+core = "1.15.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+cardstackview = { module = "com.github.yuyakaido:CardStackView", version.ref = "cardstackview" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -36,11 +43,17 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material-v190 = { module = "com.google.android.material:material", version.ref = "materialVersion" }
 retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-lifecycle-viewmodel-compose-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose-android", version.ref = "lifecycleViewmodelComposeAndroid" }
+coil-kt-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+android-card-stack-view = { module = "com.github.yuyakaido:CardStackView", version.ref = "cardStackViewVersion" }
+androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+androidKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 

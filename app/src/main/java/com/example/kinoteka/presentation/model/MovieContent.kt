@@ -9,8 +9,6 @@ data class MovieContent(
     val year: String = "Год",
     val country: String = "Страна",
     val genres: List<Genre> = emptyList(),
-    var progress: Int = 0
-    //val reviews: List<ReviewShort>?,
-    //val rating: Double?,
-    //var reviewRating: Int? = null
+    var progress: Int = 0,
+    val rating: Float? = 0.0f
 )

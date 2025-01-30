@@ -14,5 +14,14 @@
     <color name="selected_button_start_gradient">#FFDF2800</color>
     <color name="average_gradient_color">#FFEF4719</color>
     <color name="gray">#CCCCCC</color>
+    <color name="marks_one">#FF1500</color>
+    <color name="marks_two">#FF2B00</color>
+    <color name="marks_three">#FF4000</color>
+    <color name="marks_four">#FF8000</color>
+    <color name="marks_five">#FFB300</color>
+    <color name="marks_six">#F4E225</color>
+    <color name="marks_seven">#9CB814</color>
+    <color name="marks_eight">#4EAD1F</color>
+    <color name="marks_nine">#00991A</color>
 
 </resources>

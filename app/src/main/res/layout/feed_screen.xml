@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/app_background">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieView"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cardImageView"
+        app:lottie_fileName="download_anim.json">
+
+    </com.airbnb.lottie.LottieAnimationView>
     <ImageView
         android:id="@+id/logoImageView"
         android:layout_width="wrap_content"
@@ -14,78 +25,73 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp" />
+        android:layout_marginTop="24dp"
+        app:lottie_loop="true"/>
 
-    <androidx.cardview.widget.CardView
+    <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/cardImageView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:cardCornerRadius="16dp"
-        app:cardBackgroundColor="@color/app_background"
-        app:layout_constraintTop_toBottomOf="@id/logoImageView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintDimensionRatio="2:3"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="56dp"
+        android:theme="@style/CustomCardStackViewTheme"
+        app:layout_constraintBottom_toBottomOf="@+id/movieTitleTextView"
+        app:layout_constraintTop_toBottomOf="@+id/logoImageView"
+        tools:listitem="@layout/feed_item">
 
-        <ImageView
-            android:id="@+id/posterImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
-    </androidx.cardview.widget.CardView>
+    </com.yuyakaido.android.cardstackview.CardStackView>
 
     <TextView
         android:id="@+id/movieTitleTextView"
-        android:fontFamily="@font/manrope_bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/manrope_bold"
+        android:gravity="center"
         android:lineHeight="32dp"
+        android:maxLines="1"
+        android:textColor="@color/white"
         android:textFontWeight="700"
         android:textSize="24sp"
-        android:textColor="@color/white"
         android:textStyle="bold"
-        android:layout_marginHorizontal="24dp"
-        app:layout_constraintTop_toBottomOf="@id/cardImageView"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/countryYearTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:maxLines="1"
-        android:ellipsize="end"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/countryYearTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
+        android:layout_marginTop="4dp"
         android:textColor="@color/gray"
-        app:layout_constraintTop_toBottomOf="@id/movieTitleTextView"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/genreContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="8dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/genreContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="104dp"
+
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/countryYearTextView"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/firstGenre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/manrope"
+            android:background="@drawable/genre_background"
+            android:fontFamily="@font/manrope_medium"
             android:lineHeight="20dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
             android:textAlignment="center"
-            android:background="@drawable/genre_background"
             android:textColor="@color/white"
             android:textFontWeight="500"
             android:textSize="16sp"
@@ -97,30 +103,30 @@
             android:id="@+id/secondGenre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/manrope"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/genre_background"
+            android:fontFamily="@font/manrope_medium"
             android:lineHeight="20dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
             android:textColor="@color/white"
             android:textFontWeight="500"
             android:textSize="16sp"
-            android:background="@drawable/genre_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/thirdGenre"
             app:layout_constraintStart_toEndOf="@id/firstGenre"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/thirdGenre"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/manrope"
+            android:background="@drawable/genre_background"
+            android:fontFamily="@font/manrope_medium"
             android:lineHeight="20dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
-            android:background="@drawable/genre_background"
             android:textColor="@color/white"
             android:textFontWeight="500"
             android:textSize="16sp"

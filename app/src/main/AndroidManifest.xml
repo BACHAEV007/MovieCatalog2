@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
+        android:name=".AppContext"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,17 +16,21 @@
         android:theme="@style/Theme.KINOTEKA"
         tools:targetApi="31">
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.ui.screenview.LaunchScreen"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.KINOTEKA">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.MovieActivity" />
+        <activity
+            android:name=".presentation.ui.screenview.MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.KINOTEKA" />
+        <activity android:name=".presentation.ui.screenview.MovieDetailsActivity" />
+        <activity android:name=".presentation.ui.screenview.MovieActivity" />
     </application>
 
 </manifest>

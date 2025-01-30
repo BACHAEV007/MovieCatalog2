@@ -4,8 +4,11 @@ import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.kinoteka.domain.model.LoginCredentials
+import com.example.kinoteka.domain.model.LoginCredentialsModel
+import com.example.kinoteka.domain.model.User
 import com.example.kinoteka.domain.model.ValidationErrorType
+import com.example.kinoteka.domain.usecase.AddUserUseCase
+import com.example.kinoteka.domain.usecase.GetProfileInfoUseCase
 import com.example.kinoteka.domain.usecase.LoginUserUseCase
 import com.example.kinoteka.domain.usecase.ValidateLoginUseCase
 import com.example.kinoteka.domain.usecase.ValidatePasswordUseCase
@@ -20,21 +23,27 @@ import kotlinx.coroutines.launch
 class LoginViewModel(
     private val validateLoginUseCase: ValidateLoginUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val loginUserUseCase: LoginUserUseCase
+    private val loginUserUseCase: LoginUserUseCase,
+    private val addUserUseCase: AddUserUseCase,
+    private val getProfileInfoUseCase: GetProfileInfoUseCase
 ) : ViewModel(){
     private val _loginContent = MutableStateFlow(LoginContent())
     val loginContent: StateFlow<LoginContent> = _loginContent
     private val _isFormValid = MutableStateFlow(false)
     val isFormValid: StateFlow<Boolean> = _isFormValid
-
+    init {
+        viewModelScope.launch {
+            _loginContent.collect {
+                validateForm()
+            }
+        }
+    }
     fun onLoginChanged(newLogin: String, context: Context) {
         val validationResult = validateLoginUseCase(newLogin)
         val errorDescription = getErrorDescription(validationResult)
         viewModelScope.launch(Dispatchers.Main) {
             if (validationResult != null) {
                 Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Логин валиден", Toast.LENGTH_SHORT).show()
             }
         }
         _loginContent.update { currentState ->
@@ -43,7 +52,6 @@ class LoginViewModel(
                 loginError = errorDescription
             )
         }
-        validateForm()
     }
 
     fun onPasswordChanged(password: String, context: Context){
@@ -55,10 +63,7 @@ class LoginViewModel(
         )
         if (validationResult != null) {
             Toast.makeText(context, errorDescription!!, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "пароль валиден", Toast.LENGTH_SHORT).show()
         }
-        validateForm()
     }
 
     private fun validateForm() {
@@ -72,11 +77,19 @@ class LoginViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             loginUserUseCase(
                 with(_loginContent.value) {
-                    LoginCredentials(
+                    LoginCredentialsModel(
                         userName = login,
                         password = password
                     )
                 }
+            )
+            val user = getProfileInfoUseCase()
+            addUserUseCase(
+                User(
+                    userId = user.id,
+                    nickName = user.nickName,
+                    avatar = user.avatarLink ?: "",
+                )
             )
         }
     }

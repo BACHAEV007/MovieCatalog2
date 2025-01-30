@@ -9,4 +9,27 @@
         <item name="android:backgroundTint">@color/gray</item>
         <item name="android:progressDrawable">@drawable/gradient</item>
     </style>
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/sign_up_button</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/DialogButtonTextStyle</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/DialogButtonTextStyle</item>
+    </style>
+    <style name="DialogButtonTextStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/gray_faded</item>
+    </style>
+    <style name="RoundedAvatar">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="CustomCardView" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="cardElevation">8dp</item>
+        <item name="cardCornerRadius">16dp</item>
+    </style>
+    <style name="CustomCardStackViewTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    </style>
+    <style name="avatar">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

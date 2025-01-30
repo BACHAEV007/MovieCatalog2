@@ -1,16 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.androidKapt)
 }
 
 android {
     namespace = "com.example.kinoteka"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.kinoteka"
-        minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
+        minSdk = 26
         versionCode = 1
         versionName = "1.0"
 
@@ -53,8 +54,18 @@ android {
 }
 
 dependencies {
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation(libs.androidx.core)
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
+    implementation("androidx.core:core-ktx:1.10.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    implementation("com.airbnb.android:lottie:6.1.0")
+    implementation(libs.material.v190)
     implementation("com.squareup.picasso:picasso:2.8")
-    //implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation(libs.coil.kt.compose)
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("androidx.navigation:navigation-compose:2.7.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.6.2")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
     implementation(libs.retrofit)
@@ -75,6 +86,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.androidx.lifecycle.viewmodel.compose.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -82,4 +94,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.cardstackview)
+    implementation("androidx.compose.material3:material3:1.4.0-alpha02")
+    implementation("com.google.android.material:material:1.9.0")
 }
