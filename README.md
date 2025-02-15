@@ -1,14 +1,14 @@
 ## 🎥 MovieCatalog
 
-## 📚 Libraries and tools used
+с📚 Libraries and tools used
 - ✅ **Clean Architecture**
 - ✅ **MVVM**
 - ✅ **Jetpack Compose**
-- ✅ **Dependency Injection with Dagger-Hilt**
+- ✅ **View**
 - ✅ **Kotlin Coroutines**
 - ✅ **Retrofit**
 - ✅ **ROOM**
 - ✅ **Accompanist**
 - ✅ **Material 3**
-- ✅ **Paging 3**
-📱 Screenshots
+
+## 📱 Screenshots
