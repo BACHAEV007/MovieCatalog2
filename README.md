@@ -1,15 +1,15 @@
 ## 🎥 MovieCatalog
 
 с📚 Libraries and tools used
-- ✅ **Clean Architecture**
-- ✅ **MVVM**
-- ✅ **Jetpack Compose**
-- ✅ **View**
-- ✅ **Kotlin Coroutines**
-- ✅ **Retrofit**
-- ✅ **ROOM**
-- ✅ **Accompanist**
-- ✅ **Material 3**
+- **Clean Architecture**
+- **MVVM**
+- **Jetpack Compose**
+- **View**
+- **Kotlin Coroutines**
+- **Retrofit**
+- **ROOM**
+- **Accompanist**
+- **Material 3**
 
 ## 📱 Screenshots
 **Welcome Screen | Sign-in Screen | Sign-up Screen**
